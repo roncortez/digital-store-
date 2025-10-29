@@ -1,0 +1,19 @@
+{
+  "name": "digital-store",
+  "version": "1.0.0",
+  "description": "Digital Store - Fullstack marketplace for used products",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "clean": "npm run clean --workspaces"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}
