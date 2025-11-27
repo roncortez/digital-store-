@@ -4,19 +4,19 @@
 
 ## Core Reflective Methods
 
-**Expand or Contract for Audience**
+Expand or Contract for Audience
 
 - Ask whether to 'expand' (add detail, elaborate) or 'contract' (simplify, clarify)
 - Identify specific target audience if relevant
 - Tailor content complexity and depth accordingly
 
-**Explain Reasoning (CoT Step-by-Step)**
+Explain Reasoning (CoT Step-by-Step)
 
 - Walk through the step-by-step thinking process
 - Reveal underlying assumptions and decision points
 - Show how conclusions were reached from current role's perspective
 
-**Critique and Refine**
+Critique and Refine
 
 - Review output for flaws, inconsistencies, or improvement areas
 - Identify specific weaknesses from role's expertise
@@ -24,14 +24,14 @@
 
 ## Structural Analysis Methods
 
-**Analyze Logical Flow and Dependencies**
+Analyze Logical Flow and Dependencies
 
 - Examine content structure for logical progression
 - Check internal consistency and coherence
 - Identify and validate dependencies between elements
 - Confirm effective ordering and sequencing
 
-**Assess Alignment with Overall Goals**
+Assess Alignment with Overall Goals
 
 - Evaluate content contribution to stated objectives
 - Identify any misalignments or gaps
@@ -40,14 +40,14 @@
 
 ## Risk and Challenge Methods
 
-**Identify Potential Risks and Unforeseen Issues**
+Identify Potential Risks and Unforeseen Issues
 
 - Brainstorm potential risks from role's expertise
 - Identify overlooked edge cases or scenarios
 - Anticipate unintended consequences
 - Highlight implementation challenges
 
-**Challenge from Critical Perspective**
+Challenge from Critical Perspective
 
 - Adopt critical stance on current content
 - Play devil's advocate from specified viewpoint
@@ -56,14 +56,14 @@
 
 ## Creative Exploration Methods
 
-**Tree of Thoughts Deep Dive**
+Tree of Thoughts Deep Dive
 
 - Break problem into discrete "thoughts" or intermediate steps
 - Explore multiple reasoning paths simultaneously
 - Use self-evaluation to classify each path as "sure", "likely", or "impossible"
 - Apply search algorithms (BFS/DFS) to find optimal solution paths
 
-**Hindsight is 20/20: The 'If Only...' Reflection**
+Hindsight is 20/20: The 'If Only...' Reflection
 
 - Imagine retrospective scenario based on current content
 - Identify the one "if only we had known/done X..." insight
@@ -72,7 +72,7 @@
 
 ## Multi-Persona Collaboration Methods
 
-**Agile Team Perspective Shift**
+Agile Team Perspective Shift
 
 - Rotate through different Scrum team member viewpoints
 - Product Owner: Focus on user value and business impact
@@ -80,14 +80,14 @@
 - Developer: Assess technical implementation and complexity
 - QA: Identify testing scenarios and quality concerns
 
-**Stakeholder Round Table**
+Stakeholder Round Table
 
 - Convene virtual meeting with multiple personas
 - Each persona contributes unique perspective on content
 - Identify conflicts and synergies between viewpoints
 - Synthesize insights into actionable recommendations
 
-**Meta-Prompting Analysis**
+Meta-Prompting Analysis
 
 - Step back to analyze the structure and logic of current approach
 - Question the format and methodology being used
@@ -96,28 +96,28 @@
 
 ## Advanced 2025 Techniques
 
-**Self-Consistency Validation**
+Self-Consistency Validation
 
 - Generate multiple reasoning paths for same problem
 - Compare consistency across different approaches
 - Identify most reliable and robust solution
 - Highlight areas where approaches diverge and why
 
-**ReWOO (Reasoning Without Observation)**
+ReWOO (Reasoning Without Observation)
 
 - Separate parametric reasoning from tool-based actions
 - Create reasoning plan without external dependencies
 - Identify what can be solved through pure reasoning
 - Optimize for efficiency and reduced token usage
 
-**Persona-Pattern Hybrid**
+Persona-Pattern Hybrid
 
 - Combine specific role expertise with elicitation pattern
 - Architect + Risk Analysis: Deep technical risk assessment
 - UX Expert + User Journey: End-to-end experience critique
 - PM + Stakeholder Analysis: Multi-perspective impact review
 
-**Emergent Collaboration Discovery**
+Emergent Collaboration Discovery
 
 - Allow multiple perspectives to naturally emerge
 - Identify unexpected insights from persona interactions
@@ -126,21 +126,21 @@
 
 ## Game-Based Elicitation Methods
 
-**Red Team vs Blue Team**
+Red Team vs Blue Team
 
 - Red Team: Attack the proposal, find vulnerabilities
 - Blue Team: Defend and strengthen the approach
 - Competitive analysis reveals blind spots
 - Results in more robust, battle-tested solutions
 
-**Innovation Tournament**
+Innovation Tournament
 
 - Pit multiple alternative approaches against each other
 - Score each approach across different criteria
 - Crowd-source evaluation from different personas
 - Identify winning combination of features
 
-**Escape Room Challenge**
+Escape Room Challenge
 
 - Present content as constraints to work within
 - Find creative solutions within tight limitations
@@ -149,7 +149,7 @@
 
 ## Process Control
 
-**Proceed / No Further Actions**
+Proceed / No Further Actions
 
 - Acknowledge choice to finalize current work
 - Accept output as-is or move to next step

@@ -3,8 +3,6 @@
 docOutputLocation: docs/brainstorming-session-results.md
 template: '.bmad-core/templates/brainstorming-output-tmpl.yaml'
 
----
-
 # Facilitate Brainstorming Session Task
 
 Facilitate interactive brainstorming sessions with users. Be creative and adaptive in applying techniques.
@@ -31,25 +29,25 @@ After getting answers to Step 1, present 4 approach options (numbered):
 
 ### Step 3: Execute Techniques Interactively
 
-**KEY PRINCIPLES:**
+KEY PRINCIPLES:
 
-- **FACILITATOR ROLE**: Guide user to generate their own ideas through questions, prompts, and examples
-- **CONTINUOUS ENGAGEMENT**: Keep user engaged with chosen technique until they want to switch or are satisfied
-- **CAPTURE OUTPUT**: If (default) document output requested, capture all ideas generated in each technique section to the document from the beginning.
+- FACILITATOR ROLE: Guide user to generate their own ideas through questions, prompts, and examples
+- CONTINUOUS ENGAGEMENT: Keep user engaged with chosen technique until they want to switch or are satisfied
+- CAPTURE OUTPUT: If (default) document output requested, capture all ideas generated in each technique section to the document from the beginning.
 
-**Technique Selection:**
+Technique Selection:
 If user selects Option 1, present numbered list of techniques from the brainstorming-techniques data file. User can select by number..
 
-**Technique Execution:**
+Technique Execution:
 
 1. Apply selected technique according to data file description
 2. Keep engaging with technique until user indicates they want to:
-   - Choose a different technique
-   - Apply current ideas to a new technique
-   - Move to convergent phase
-   - End session
+ - Choose a different technique
+ - Apply current ideas to a new technique
+ - Move to convergent phase
+ - End session
 
-**Output Capture (if requested):**
+Output Capture (if requested):
 For each technique used, capture:
 
 - Technique name and duration
@@ -59,44 +57,44 @@ For each technique used, capture:
 
 ### Step 4: Session Flow
 
-1. **Warm-up** (5-10 min) - Build creative confidence
-2. **Divergent** (20-30 min) - Generate quantity over quality
-3. **Convergent** (15-20 min) - Group and categorize ideas
-4. **Synthesis** (10-15 min) - Refine and develop concepts
+1. Warm-up (5-10 min) - Build creative confidence
+2. Divergent (20-30 min) - Generate quantity over quality
+3. Convergent (15-20 min) - Group and categorize ideas
+4. Synthesis (10-15 min) - Refine and develop concepts
 
 ### Step 5: Document Output (if requested)
 
 Generate structured document with these sections:
 
-**Executive Summary**
+Executive Summary
 
 - Session topic and goals
 - Techniques used and duration
 - Total ideas generated
 - Key themes and patterns identified
 
-**Technique Sections** (for each technique used)
+Technique Sections (for each technique used)
 
 - Technique name and description
 - Ideas generated (user's own words)
 - Insights discovered
 - Notable connections or patterns
 
-**Idea Categorization**
+Idea Categorization
 
-- **Immediate Opportunities** - Ready to implement now
-- **Future Innovations** - Requires development/research
-- **Moonshots** - Ambitious, transformative concepts
-- **Insights & Learnings** - Key realizations from session
+- Immediate Opportunities - Ready to implement now
+- Future Innovations - Requires development/research
+- Moonshots - Ambitious, transformative concepts
+- Insights & Learnings - Key realizations from session
 
-**Action Planning**
+Action Planning
 
 - Top 3 priority ideas with rationale
 - Next steps for each priority
 - Resources/research needed
 - Timeline considerations
 
-**Reflection & Follow-up**
+Reflection & Follow-up
 
 - What worked well in this session
 - Areas for further exploration
@@ -105,12 +103,12 @@ Generate structured document with these sections:
 
 ## Key Principles
 
-- **YOU ARE A FACILITATOR**: Guide the user to brainstorm, don't brainstorm for them (unless they request it persistently)
-- **INTERACTIVE DIALOGUE**: Ask questions, wait for responses, build on their ideas
-- **ONE TECHNIQUE AT A TIME**: Don't mix multiple techniques in one response
-- **CONTINUOUS ENGAGEMENT**: Stay with one technique until user wants to switch
-- **DRAW IDEAS OUT**: Use prompts and examples to help them generate their own ideas
-- **REAL-TIME ADAPTATION**: Monitor engagement and adjust approach as needed
+- YOU ARE A FACILITATOR: Guide the user to brainstorm, don't brainstorm for them (unless they request it persistently)
+- INTERACTIVE DIALOGUE: Ask questions, wait for responses, build on their ideas
+- ONE TECHNIQUE AT A TIME: Don't mix multiple techniques in one response
+- CONTINUOUS ENGAGEMENT: Stay with one technique until user wants to switch
+- DRAW IDEAS OUT: Use prompts and examples to help them generate their own ideas
+- REAL-TIME ADAPTATION: Monitor engagement and adjust approach as needed
 - Maintain energy and momentum
 - Defer judgment during generation
 - Quantity leads to quality (aim for 100 ideas in 60 minutes)
@@ -119,19 +117,19 @@ Generate structured document with these sections:
 
 ## Advanced Engagement Strategies
 
-**Energy Management**
+Energy Management
 
 - Check engagement levels: "How are you feeling about this direction?"
 - Offer breaks or technique switches if energy flags
 - Use encouraging language and celebrate idea generation
 
-**Depth vs. Breadth**
+Depth vs. Breadth
 
 - Ask follow-up questions to deepen ideas: "Tell me more about that..."
 - Use "Yes, and..." to build on their ideas
 - Help them make connections: "How does this relate to your earlier idea about...?"
 
-**Transition Management**
+Transition Management
 
 - Always ask before switching techniques: "Ready to try a different approach?"
 - Offer options: "Should we explore this idea deeper or generate more alternatives?"

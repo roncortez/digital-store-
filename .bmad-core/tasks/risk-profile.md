@@ -6,13 +6,13 @@ Generate a comprehensive risk assessment matrix for a story implementation using
 
 ## Inputs
 
-```yaml
+``yaml
 required:
-  - story_id: '{epic}.{story}' # e.g., "1.3"
-  - story_path: 'docs/stories/{epic}.{story}.*.md'
-  - story_title: '{title}' # If missing, derive from story file H1
-  - story_slug: '{slug}' # If missing, derive from title (lowercase, hyphenated)
-```
+ - story_id: '{epic}.{story}' # e.g., "1.3"
+ - story_path: 'docs/stories/{epic}.{story}.*.md'
+ - story_title: '{title}' # If missing, derive from story file H1
+ - story_slug: '{slug}' # If missing, derive from title (lowercase, hyphenated)
+`
 
 ## Purpose
 
@@ -22,56 +22,56 @@ Identify, assess, and prioritize risks in the story implementation. Provide risk
 
 ### Risk Categories
 
-**Category Prefixes:**
+Category Prefixes:
 
-- `TECH`: Technical Risks
-- `SEC`: Security Risks
-- `PERF`: Performance Risks
-- `DATA`: Data Risks
-- `BUS`: Business Risks
-- `OPS`: Operational Risks
+- TECH: Technical Risks
+- SEC: Security Risks
+- PERF: Performance Risks
+- DATA: Data Risks
+- BUS: Business Risks
+- OPS: Operational Risks
 
-1. **Technical Risks (TECH)**
-   - Architecture complexity
-   - Integration challenges
-   - Technical debt
-   - Scalability concerns
-   - System dependencies
+1. Technical Risks (TECH)
+ - Architecture complexity
+ - Integration challenges
+ - Technical debt
+ - Scalability concerns
+ - System dependencies
 
-2. **Security Risks (SEC)**
-   - Authentication/authorization flaws
-   - Data exposure vulnerabilities
-   - Injection attacks
-   - Session management issues
-   - Cryptographic weaknesses
+2. Security Risks (SEC)
+ - Authentication/authorization flaws
+ - Data exposure vulnerabilities
+ - Injection attacks
+ - Session management issues
+ - Cryptographic weaknesses
 
-3. **Performance Risks (PERF)**
-   - Response time degradation
-   - Throughput bottlenecks
-   - Resource exhaustion
-   - Database query optimization
-   - Caching failures
+3. Performance Risks (PERF)
+ - Response time degradation
+ - Throughput bottlenecks
+ - Resource exhaustion
+ - Database query optimization
+ - Caching failures
 
-4. **Data Risks (DATA)**
-   - Data loss potential
-   - Data corruption
-   - Privacy violations
-   - Compliance issues
-   - Backup/recovery gaps
+4. Data Risks (DATA)
+ - Data loss potential
+ - Data corruption
+ - Privacy violations
+ - Compliance issues
+ - Backup/recovery gaps
 
-5. **Business Risks (BUS)**
-   - Feature doesn't meet user needs
-   - Revenue impact
-   - Reputation damage
-   - Regulatory non-compliance
-   - Market timing
+5. Business Risks (BUS)
+ - Feature doesn't meet user needs
+ - Revenue impact
+ - Reputation damage
+ - Regulatory non-compliance
+ - Market timing
 
-6. **Operational Risks (OPS)**
-   - Deployment failures
-   - Monitoring gaps
-   - Incident response readiness
-   - Documentation inadequacy
-   - Knowledge transfer issues
+6. Operational Risks (OPS)
+ - Deployment failures
+ - Monitoring gaps
+ - Incident response readiness
+ - Documentation inadequacy
+ - Knowledge transfer issues
 
 ## Risk Analysis Process
 
@@ -79,33 +79,33 @@ Identify, assess, and prioritize risks in the story implementation. Provide risk
 
 For each category, identify specific risks:
 
-```yaml
+`yaml
 risk:
-  id: 'SEC-001' # Use prefixes: SEC, PERF, DATA, BUS, OPS, TECH
-  category: security
-  title: 'Insufficient input validation on user forms'
-  description: 'Form inputs not properly sanitized could lead to XSS attacks'
-  affected_components:
-    - 'UserRegistrationForm'
-    - 'ProfileUpdateForm'
-  detection_method: 'Code review revealed missing validation'
-```
+ id: 'SEC-001' # Use prefixes: SEC, PERF, DATA, BUS, OPS, TECH
+ category: security
+ title: 'Insufficient input validation on user forms'
+ description: 'Form inputs not properly sanitized could lead to XSS attacks'
+ affected_components:
+ - 'UserRegistrationForm'
+ - 'ProfileUpdateForm'
+ detection_method: 'Code review revealed missing validation'
+`
 
 ### 2. Risk Assessment
 
 Evaluate each risk using probability × impact:
 
-**Probability Levels:**
+Probability Levels:
 
-- `High (3)`: Likely to occur (>70% chance)
-- `Medium (2)`: Possible occurrence (30-70% chance)
-- `Low (1)`: Unlikely to occur (<30% chance)
+- High (3): Likely to occur (>70% chance)
+- Medium (2): Possible occurrence (30-70% chance)
+- Low (1): Unlikely to occur (<30% chance)
 
-**Impact Levels:**
+Impact Levels:
 
-- `High (3)`: Severe consequences (data breach, system down, major financial loss)
-- `Medium (2)`: Moderate consequences (degraded performance, minor data issues)
-- `Low (1)`: Minor consequences (cosmetic issues, slight inconvenience)
+- High (3): Severe consequences (data breach, system down, major financial loss)
+- Medium (2): Moderate consequences (degraded performance, minor data issues)
+- Low (1): Minor consequences (cosmetic issues, slight inconvenience)
 
 ### Risk Score = Probability × Impact
 
@@ -119,74 +119,74 @@ Evaluate each risk using probability × impact:
 
 Create risk matrix:
 
-```markdown
+`markdown
 ## Risk Matrix
 
-| Risk ID  | Description             | Probability | Impact     | Score | Priority |
+| Risk ID | Description | Probability | Impact | Score | Priority |
 | -------- | ----------------------- | ----------- | ---------- | ----- | -------- |
-| SEC-001  | XSS vulnerability       | High (3)    | High (3)   | 9     | Critical |
-| PERF-001 | Slow query on dashboard | Medium (2)  | Medium (2) | 4     | Medium   |
-| DATA-001 | Backup failure          | Low (1)     | High (3)   | 3     | Low      |
-```
+| SEC-001 | XSS vulnerability | High (3) | High (3) | 9 | Critical |
+| PERF-001 | Slow query on dashboard | Medium (2) | Medium (2) | 4 | Medium |
+| DATA-001 | Backup failure | Low (1) | High (3) | 3 | Low |
+`
 
 ### 4. Risk Mitigation Strategies
 
 For each identified risk, provide mitigation:
 
-```yaml
+`yaml
 mitigation:
-  risk_id: 'SEC-001'
-  strategy: 'preventive' # preventive|detective|corrective
-  actions:
-    - 'Implement input validation library (e.g., validator.js)'
-    - 'Add CSP headers to prevent XSS execution'
-    - 'Sanitize all user inputs before storage'
-    - 'Escape all outputs in templates'
-  testing_requirements:
-    - 'Security testing with OWASP ZAP'
-    - 'Manual penetration testing of forms'
-    - 'Unit tests for validation functions'
-  residual_risk: 'Low - Some zero-day vulnerabilities may remain'
-  owner: 'dev'
-  timeline: 'Before deployment'
-```
+ risk_id: 'SEC-001'
+ strategy: 'preventive' # preventive|detective|corrective
+ actions:
+ - 'Implement input validation library (e.g., validator.js)'
+ - 'Add CSP headers to prevent XSS execution'
+ - 'Sanitize all user inputs before storage'
+ - 'Escape all outputs in templates'
+ testing_requirements:
+ - 'Security testing with OWASP ZAP'
+ - 'Manual penetration testing of forms'
+ - 'Unit tests for validation functions'
+ residual_risk: 'Low - Some zero-day vulnerabilities may remain'
+ owner: 'dev'
+ timeline: 'Before deployment'
+`
 
 ## Outputs
 
 ### Output 1: Gate YAML Block
 
-Generate for pasting into gate file under `risk_summary`:
+Generate for pasting into gate file under risk_summary:
 
-**Output rules:**
+Output rules:
 
 - Only include assessed risks; do not emit placeholders
 - Sort risks by score (desc) when emitting highest and any tabular lists
 - If no risks: totals all zeros, omit highest, keep recommendations arrays empty
 
-```yaml
+`yaml
 # risk_summary (paste into gate file):
 risk_summary:
-  totals:
-    critical: X # score 9
-    high: Y # score 6
-    medium: Z # score 4
-    low: W # score 2-3
-  highest:
-    id: SEC-001
-    score: 9
-    title: 'XSS on profile form'
-  recommendations:
-    must_fix:
-      - 'Add input sanitization & CSP'
-    monitor:
-      - 'Add security alerts for auth endpoints'
-```
+ totals:
+ critical: X # score 9
+ high: Y # score 6
+ medium: Z # score 4
+ low: W # score 2-3
+ highest:
+ id: SEC-001
+ score: 9
+ title: 'XSS on profile form'
+ recommendations:
+ must_fix:
+ - 'Add input sanitization & CSP'
+ monitor:
+ - 'Add security alerts for auth endpoints'
+`
 
 ### Output 2: Markdown Report
 
-**Save to:** `qa.qaLocation/assessments/{epic}.{story}-risk-{YYYYMMDD}.md`
+Save to: qa.qaLocation/assessments/{epic}.{story}-risk-{YYYYMMDD}.md
 
-```markdown
+`markdown
 # Risk Profile: Story {epic}.{story}
 
 Date: {date}
@@ -203,14 +203,14 @@ Reviewer: Quinn (Test Architect)
 
 ### 1. [ID]: Risk Title
 
-**Score: 9 (Critical)**
-**Probability**: High - Detailed reasoning
-**Impact**: High - Potential consequences
-**Mitigation**:
+Score: 9 (Critical)
+Probability: High - Detailed reasoning
+Impact: High - Potential consequences
+Mitigation:
 
 - Immediate action required
 - Specific steps to take
-  **Testing Focus**: Specific test scenarios needed
+ Testing Focus: Specific test scenarios needed
 
 ## Risk Distribution
 
@@ -286,51 +286,51 @@ Review and update risk profile when:
 - Security vulnerabilities discovered
 - Performance issues reported
 - Regulatory requirements change
-```
+`
 
 ## Risk Scoring Algorithm
 
 Calculate overall story risk score:
 
-```text
+`text
 Base Score = 100
 For each risk:
-  - Critical (9): Deduct 20 points
-  - High (6): Deduct 10 points
-  - Medium (4): Deduct 5 points
-  - Low (2-3): Deduct 2 points
+ - Critical (9): Deduct 20 points
+ - High (6): Deduct 10 points
+ - Medium (4): Deduct 5 points
+ - Low (2-3): Deduct 2 points
 
 Minimum score = 0 (extremely risky)
 Maximum score = 100 (minimal risk)
-```
+`
 
 ## Risk-Based Recommendations
 
 Based on risk profile, recommend:
 
-1. **Testing Priority**
-   - Which tests to run first
-   - Additional test types needed
-   - Test environment requirements
+1. Testing Priority
+ - Which tests to run first
+ - Additional test types needed
+ - Test environment requirements
 
-2. **Development Focus**
-   - Code review emphasis areas
-   - Additional validation needed
-   - Security controls to implement
+2. Development Focus
+ - Code review emphasis areas
+ - Additional validation needed
+ - Security controls to implement
 
-3. **Deployment Strategy**
-   - Phased rollout for high-risk changes
-   - Feature flags for risky features
-   - Rollback procedures
+3. Deployment Strategy
+ - Phased rollout for high-risk changes
+ - Feature flags for risky features
+ - Rollback procedures
 
-4. **Monitoring Setup**
-   - Metrics to track
-   - Alerts to configure
-   - Dashboard requirements
+4. Monitoring Setup
+ - Metrics to track
+ - Alerts to configure
+ - Dashboard requirements
 
 ## Integration with Quality Gates
 
-**Deterministic gate mapping:**
+Deterministic gate mapping:
 
 - Any risk with score ≥ 9 → Gate = FAIL (unless waived)
 - Else if any score ≥ 6 → Gate = CONCERNS
@@ -339,11 +339,11 @@ Based on risk profile, recommend:
 
 ### Output 3: Story Hook Line
 
-**Print this line for review task to quote:**
+Print this line for review task to quote:
 
-```text
+`text
 Risk profile: qa.qaLocation/assessments/{epic}.{story}-risk-{YYYYMMDD}.md
-```
+``
 
 ## Key Principles
 

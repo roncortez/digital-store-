@@ -6,13 +6,13 @@ Create comprehensive test scenarios with appropriate test level recommendations 
 
 ## Inputs
 
-```yaml
+``yaml
 required:
-  - story_id: '{epic}.{story}' # e.g., "1.3"
-  - story_path: '{devStoryLocation}/{epic}.{story}.*.md' # Path from core-config.yaml
-  - story_title: '{title}' # If missing, derive from story file H1
-  - story_slug: '{slug}' # If missing, derive from title (lowercase, hyphenated)
-```
+ - story_id: '{epic}.{story}' # e.g., "1.3"
+ - story_path: '{devStoryLocation}/{epic}.{story}.*.md' # Path from core-config.yaml
+ - story_title: '{title}' # If missing, derive from story file H1
+ - story_slug: '{slug}' # If missing, derive from title (lowercase, hyphenated)
+`
 
 ## Purpose
 
@@ -20,11 +20,11 @@ Design a complete test strategy that identifies what to test, at which level (un
 
 ## Dependencies
 
-```yaml
+`yaml
 data:
-  - test-levels-framework.md # Unit/Integration/E2E decision criteria
-  - test-priorities-matrix.md # P0/P1/P2/P3 classification system
-```
+ - test-levels-framework.md # Unit/Integration/E2E decision criteria
+ - test-priorities-matrix.md # P0/P1/P2/P3 classification system
+`
 
 ## Process
 
@@ -39,39 +39,39 @@ Break down each acceptance criterion into testable scenarios. For each AC:
 
 ### 2. Apply Test Level Framework
 
-**Reference:** Load `test-levels-framework.md` for detailed criteria
+Reference: Load test-levels-framework.md for detailed criteria
 
 Quick rules:
 
-- **Unit**: Pure logic, algorithms, calculations
-- **Integration**: Component interactions, DB operations
-- **E2E**: Critical user journeys, compliance
+- Unit: Pure logic, algorithms, calculations
+- Integration: Component interactions, DB operations
+- E2E: Critical user journeys, compliance
 
 ### 3. Assign Priorities
 
-**Reference:** Load `test-priorities-matrix.md` for classification
+Reference: Load test-priorities-matrix.md for classification
 
 Quick priority assignment:
 
-- **P0**: Revenue-critical, security, compliance
-- **P1**: Core user journeys, frequently used
-- **P2**: Secondary features, admin functions
-- **P3**: Nice-to-have, rarely used
+- P0: Revenue-critical, security, compliance
+- P1: Core user journeys, frequently used
+- P2: Secondary features, admin functions
+- P3: Nice-to-have, rarely used
 
 ### 4. Design Test Scenarios
 
 For each identified test need, create:
 
-```yaml
+`yaml
 test_scenario:
-  id: '{epic}.{story}-{LEVEL}-{SEQ}'
-  requirement: 'AC reference'
-  priority: P0|P1|P2|P3
-  level: unit|integration|e2e
-  description: 'What is being tested'
-  justification: 'Why this level was chosen'
-  mitigates_risks: ['RISK-001'] # If risk profile exists
-```
+ id: '{epic}.{story}-{LEVEL}-{SEQ}'
+ requirement: 'AC reference'
+ priority: P0|P1|P2|P3
+ level: unit|integration|e2e
+ description: 'What is being tested'
+ justification: 'Why this level was chosen'
+ mitigates_risks: ['RISK-001'] # If risk profile exists
+`
 
 ### 5. Validate Coverage
 
@@ -86,9 +86,9 @@ Ensure:
 
 ### Output 1: Test Design Document
 
-**Save to:** `qa.qaLocation/assessments/{epic}.{story}-test-design-{YYYYMMDD}.md`
+Save to: qa.qaLocation/assessments/{epic}.{story}-test-design-{YYYYMMDD}.md
 
-```markdown
+`markdown
 # Test Design: Story {epic}.{story}
 
 Date: {date}
@@ -108,11 +108,11 @@ Designer: Quinn (Test Architect)
 
 #### Scenarios
 
-| ID           | Level       | Priority | Test                      | Justification            |
+| ID | Level | Priority | Test | Justification |
 | ------------ | ----------- | -------- | ------------------------- | ------------------------ |
-| 1.3-UNIT-001 | Unit        | P0       | Validate input format     | Pure validation logic    |
-| 1.3-INT-001  | Integration | P0       | Service processes request | Multi-component flow     |
-| 1.3-E2E-001  | E2E         | P1       | User completes journey    | Critical path validation |
+| 1.3-UNIT-001 | Unit | P0 | Validate input format | Pure validation logic |
+| 1.3-INT-001 | Integration | P0 | Service processes request | Multi-component flow |
+| 1.3-E2E-001 | E2E | P1 | User completes journey | Critical path validation |
 
 [Continue for all ACs...]
 
@@ -127,34 +127,34 @@ Designer: Quinn (Test Architect)
 3. P0 E2E tests
 4. P1 tests in order
 5. P2+ as time permits
-```
+`
 
 ### Output 2: Gate YAML Block
 
 Generate for inclusion in quality gate:
 
-```yaml
+`yaml
 test_design:
-  scenarios_total: X
-  by_level:
-    unit: Y
-    integration: Z
-    e2e: W
-  by_priority:
-    p0: A
-    p1: B
-    p2: C
-  coverage_gaps: [] # List any ACs without tests
-```
+ scenarios_total: X
+ by_level:
+ unit: Y
+ integration: Z
+ e2e: W
+ by_priority:
+ p0: A
+ p1: B
+ p2: C
+ coverage_gaps: [] # List any ACs without tests
+`
 
 ### Output 3: Trace References
 
 Print for use by trace-requirements task:
 
-```text
+`text
 Test design matrix: qa.qaLocation/assessments/{epic}.{story}-test-design-{YYYYMMDD}.md
 P0 tests identified: {count}
-```
+``
 
 ## Quality Checklist
 
@@ -169,8 +169,8 @@ Before finalizing, verify:
 
 ## Key Principles
 
-- **Shift left**: Prefer unit over integration, integration over E2E
-- **Risk-based**: Focus on what could go wrong
-- **Efficient coverage**: Test once at the right level
-- **Maintainability**: Consider long-term test maintenance
-- **Fast feedback**: Quick tests run first
+- Shift left: Prefer unit over integration, integration over E2E
+- Risk-based: Focus on what could go wrong
+- Efficient coverage: Test once at the right level
+- Maintainability: Consider long-term test maintenance
+- Fast feedback: Quick tests run first

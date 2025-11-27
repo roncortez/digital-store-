@@ -80,7 +80,7 @@ Note: We don't need every file listed - just the important ones.]]
 - [ ] References to external documents point to specific relevant sections
 - [ ] Critical information from previous stories is summarized (not just referenced)
 - [ ] Context is provided for why references are relevant
-- [ ] References use consistent format (e.g., `docs/filename.md#section`)
+- [ ] References use consistent format (e.g., docs/filename.md#section)
 
 ## 4. SELF-CONTAINMENT ASSESSMENT
 
@@ -119,36 +119,36 @@ Note: We don't need every file listed - just the important ones.]]
 Generate a concise validation report:
 
 1. Quick Summary
-   - Story readiness: READY / NEEDS REVISION / BLOCKED
-   - Clarity score (1-10)
-   - Major gaps identified
+ - Story readiness: READY / NEEDS REVISION / BLOCKED
+ - Clarity score (1-10)
+ - Major gaps identified
 
 2. Fill in the validation table with:
-   - PASS: Requirements clearly met
-   - PARTIAL: Some gaps but workable
-   - FAIL: Critical information missing
+ - PASS: Requirements clearly met
+ - PARTIAL: Some gaps but workable
+ - FAIL: Critical information missing
 
 3. Specific Issues (if any)
-   - List concrete problems to fix
-   - Suggest specific improvements
-   - Identify any blocking dependencies
+ - List concrete problems to fix
+ - Suggest specific improvements
+ - Identify any blocking dependencies
 
 4. Developer Perspective
-   - Could YOU implement this story as written?
-   - What questions would you have?
-   - What might cause delays or rework?
+ - Could YOU implement this story as written?
+ - What questions would you have?
+ - What might cause delays or rework?
 
 Be pragmatic - perfect documentation doesn't exist, but it must be enough to provide the extreme context a dev agent needs to get the work down and not create a mess.]]
 
-| Category                             | Status | Issues |
+| Category | Status | Issues |
 | ------------------------------------ | ------ | ------ |
-| 1. Goal & Context Clarity            | _TBD_  |        |
-| 2. Technical Implementation Guidance | _TBD_  |        |
-| 3. Reference Effectiveness           | _TBD_  |        |
-| 4. Self-Containment Assessment       | _TBD_  |        |
-| 5. Testing Guidance                  | _TBD_  |        |
+| 1. Goal & Context Clarity | _TBD_ | |
+| 2. Technical Implementation Guidance | _TBD_ | |
+| 3. Reference Effectiveness | _TBD_ | |
+| 4. Self-Containment Assessment | _TBD_ | |
+| 5. Testing Guidance | _TBD_ | |
 
-**Final Assessment:**
+Final Assessment:
 
 - READY: The story provides sufficient context for implementation
 - NEEDS REVISION: The story requires updates (see issues)

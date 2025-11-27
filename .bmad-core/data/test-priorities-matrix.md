@@ -8,7 +8,7 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 
 ### P0 - Critical (Must Test)
 
-**Criteria:**
+Criteria:
 
 - Revenue-impacting functionality
 - Security-critical paths
@@ -16,7 +16,7 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 - Regulatory compliance requirements
 - Previously broken functionality (regression prevention)
 
-**Examples:**
+Examples:
 
 - Payment processing
 - Authentication/authorization
@@ -24,7 +24,7 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 - Financial calculations
 - GDPR/privacy compliance
 
-**Testing Requirements:**
+Testing Requirements:
 
 - Comprehensive coverage at all levels
 - Both happy and unhappy paths
@@ -33,7 +33,7 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 
 ### P1 - High (Should Test)
 
-**Criteria:**
+Criteria:
 
 - Core user journeys
 - Frequently used features
@@ -41,7 +41,7 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 - Integration points between systems
 - Features affecting user experience
 
-**Examples:**
+Examples:
 
 - User registration flow
 - Search functionality
@@ -49,7 +49,7 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 - Notification systems
 - Dashboard displays
 
-**Testing Requirements:**
+Testing Requirements:
 
 - Primary happy paths required
 - Key error scenarios
@@ -58,7 +58,7 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 
 ### P2 - Medium (Nice to Test)
 
-**Criteria:**
+Criteria:
 
 - Secondary features
 - Admin functionality
@@ -66,7 +66,7 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 - Configuration options
 - UI polish and aesthetics
 
-**Examples:**
+Examples:
 
 - Admin settings panels
 - Report generation
@@ -74,7 +74,7 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 - Help documentation
 - Analytics tracking
 
-**Testing Requirements:**
+Testing Requirements:
 
 - Happy path coverage
 - Basic error handling
@@ -82,21 +82,21 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 
 ### P3 - Low (Test if Time Permits)
 
-**Criteria:**
+Criteria:
 
 - Rarely used features
 - Nice-to-have functionality
 - Cosmetic issues
 - Non-critical optimizations
 
-**Examples:**
+Examples:
 
 - Advanced preferences
 - Legacy feature support
 - Experimental features
 - Debug utilities
 
-**Testing Requirements:**
+Testing Requirements:
 
 - Smoke tests only
 - Can rely on manual testing
@@ -126,35 +126,35 @@ Guide for prioritizing test scenarios based on risk, criticality, and business i
 
 ## Test Coverage by Priority
 
-| Priority | Unit Coverage | Integration Coverage | E2E Coverage       |
+| Priority | Unit Coverage | Integration Coverage | E2E Coverage |
 | -------- | ------------- | -------------------- | ------------------ |
-| P0       | >90%          | >80%                 | All critical paths |
-| P1       | >80%          | >60%                 | Main happy paths   |
-| P2       | >60%          | >40%                 | Smoke tests        |
-| P3       | Best effort   | Best effort          | Manual only        |
+| P0 | >90% | >80% | All critical paths |
+| P1 | >80% | >60% | Main happy paths |
+| P2 | >60% | >40% | Smoke tests |
+| P3 | Best effort | Best effort | Manual only |
 
 ## Priority Assignment Rules
 
-1. **Start with business impact** - What happens if this fails?
-2. **Consider probability** - How likely is failure?
-3. **Factor in detectability** - Would we know if it failed?
-4. **Account for recoverability** - Can we fix it quickly?
+1. Start with business impact - What happens if this fails?
+2. Consider probability - How likely is failure?
+3. Factor in detectability - Would we know if it failed?
+4. Account for recoverability - Can we fix it quickly?
 
 ## Priority Decision Tree
 
-```
+``
 Is it revenue-critical?
 ├─ YES → P0
 └─ NO → Does it affect core user journey?
-    ├─ YES → Is it high-risk?
-    │   ├─ YES → P0
-    │   └─ NO → P1
-    └─ NO → Is it frequently used?
-        ├─ YES → P1
-        └─ NO → Is it customer-facing?
-            ├─ YES → P2
-            └─ NO → P3
-```
+ ├─ YES → Is it high-risk?
+ │ ├─ YES → P0
+ │ └─ NO → P1
+ └─ NO → Is it frequently used?
+ ├─ YES → P1
+ └─ NO → Is it customer-facing?
+ ├─ YES → P2
+ └─ NO → P3
+``
 
 ## Test Execution Order
 

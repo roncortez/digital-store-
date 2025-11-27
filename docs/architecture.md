@@ -70,11 +70,11 @@ graph TB
 
 ### Architectural Patterns
 
-- **Component-Based UI:** Reusable React components with TypeScript - _Rationale:_ Maintainability and type safety across large codebases, enabling rapid feature development
-- **Repository Pattern:** Abstract data access logic with Prisma - _Rationale:_ Enables testing and future database migration flexibility, separates business logic from data persistence
-- **RESTful API Pattern:** Standard HTTP methods for CRUD operations - _Rationale:_ Simple, widely understood interface between frontend and backend, supports caching and tooling
-- **JWT Authentication Pattern:** Token-based auth with refresh tokens - _Rationale:_ Stateless authentication suitable for scalable web applications, secure session management
-- **Separate Repositories Pattern:** Independent frontend and backend repositories - _Rationale:_ Enables independent deployment cycles and scaling, with shared code via npm packages
+- Component-Based UI: Reusable React components with TypeScript - Rationale: Maintainability and type safety across large codebases, enabling rapid feature development
+- Repository Pattern: Abstract data access logic with Prisma - Rationale: Enables testing and future database migration flexibility, separates business logic from data persistence
+- RESTful API Pattern: Standard HTTP methods for CRUD operations - Rationale: Simple, widely understood interface between frontend and backend, supports caching and tooling
+- JWT Authentication Pattern: Token-based auth with refresh tokens - Rationale: Stateless authentication suitable for scalable web applications, secure session management
+- Separate Repositories Pattern: Independent frontend and backend repositories - Rationale: Enables independent deployment cycles and scaling, with shared code via npm packages
 
 ## Tech Stack
 

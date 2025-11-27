@@ -10,30 +10,30 @@ Generate comprehensive documentation for existing projects optimized for AI deve
 
 ### 1. Initial Project Analysis
 
-**CRITICAL:** First, check if a PRD or requirements document exists in context. If yes, use it to focus your documentation efforts on relevant areas only.
+CRITICAL: First, check if a PRD or requirements document exists in context. If yes, use it to focus your documentation efforts on relevant areas only.
 
-**IF PRD EXISTS**:
+IF PRD EXISTS:
 
 - Review the PRD to understand what enhancement/feature is planned
 - Identify which modules, services, or areas will be affected
 - Focus documentation ONLY on these relevant areas
 - Skip unrelated parts of the codebase to keep docs lean
 
-**IF NO PRD EXISTS**:
+IF NO PRD EXISTS:
 Ask the user:
 
 "I notice you haven't provided a PRD or requirements document. To create more focused and useful documentation, I recommend one of these options:
 
-1. **Create a PRD first** - Would you like me to help create a brownfield PRD before documenting? This helps focus documentation on relevant areas.
+1. Create a PRD first - Would you like me to help create a brownfield PRD before documenting? This helps focus documentation on relevant areas.
 
-2. **Provide existing requirements** - Do you have a requirements document, epic, or feature description you can share?
+2. Provide existing requirements - Do you have a requirements document, epic, or feature description you can share?
 
-3. **Describe the focus** - Can you briefly describe what enhancement or feature you're planning? For example:
-   - 'Adding payment processing to the user service'
-   - 'Refactoring the authentication module'
-   - 'Integrating with a new third-party API'
+3. Describe the focus - Can you briefly describe what enhancement or feature you're planning? For example:
+ - 'Adding payment processing to the user service'
+ - 'Refactoring the authentication module'
+ - 'Integrating with a new third-party API'
 
-4. **Document everything** - Or should I proceed with comprehensive documentation of the entire codebase? (Note: This may create excessive documentation for large projects)
+4. Document everything - Or should I proceed with comprehensive documentation of the entire codebase? (Note: This may create excessive documentation for large projects)
 
 Please let me know your preference, or I can proceed with full documentation if you prefer."
 
@@ -44,11 +44,11 @@ Based on their response:
 
 Begin by conducting analysis of the existing project. Use available tools to:
 
-1. **Project Structure Discovery**: Examine the root directory structure, identify main folders, and understand the overall organization
-2. **Technology Stack Identification**: Look for package.json, requirements.txt, Cargo.toml, pom.xml, etc. to identify languages, frameworks, and dependencies
-3. **Build System Analysis**: Find build scripts, CI/CD configurations, and development commands
-4. **Existing Documentation Review**: Check for README files, docs folders, and any existing documentation
-5. **Code Pattern Analysis**: Sample key files to understand coding patterns, naming conventions, and architectural approaches
+1. Project Structure Discovery: Examine the root directory structure, identify main folders, and understand the overall organization
+2. Technology Stack Identification: Look for package.json, requirements.txt, Cargo.toml, pom.xml, etc. to identify languages, frameworks, and dependencies
+3. Build System Analysis: Find build scripts, CI/CD configurations, and development commands
+4. Existing Documentation Review: Check for README files, docs folders, and any existing documentation
+5. Code Pattern Analysis: Sample key files to understand coding patterns, naming conventions, and architectural approaches
 
 Ask the user these elicitation questions to better understand their needs:
 
@@ -63,34 +63,34 @@ Ask the user these elicitation questions to better understand their needs:
 
 CRITICAL: Before generating documentation, conduct extensive analysis of the existing codebase:
 
-1. **Explore Key Areas**:
-   - Entry points (main files, index files, app initializers)
-   - Configuration files and environment setup
-   - Package dependencies and versions
-   - Build and deployment configurations
-   - Test suites and coverage
+1. Explore Key Areas:
+ - Entry points (main files, index files, app initializers)
+ - Configuration files and environment setup
+ - Package dependencies and versions
+ - Build and deployment configurations
+ - Test suites and coverage
 
-2. **Ask Clarifying Questions**:
-   - "I see you're using [technology X]. Are there any custom patterns or conventions I should document?"
-   - "What are the most critical/complex parts of this system that developers struggle with?"
-   - "Are there any undocumented 'tribal knowledge' areas I should capture?"
-   - "What technical debt or known issues should I document?"
-   - "Which parts of the codebase change most frequently?"
+2. Ask Clarifying Questions:
+ - "I see you're using [technology X]. Are there any custom patterns or conventions I should document?"
+ - "What are the most critical/complex parts of this system that developers struggle with?"
+ - "Are there any undocumented 'tribal knowledge' areas I should capture?"
+ - "What technical debt or known issues should I document?"
+ - "Which parts of the codebase change most frequently?"
 
-3. **Map the Reality**:
-   - Identify ACTUAL patterns used (not theoretical best practices)
-   - Find where key business logic lives
-   - Locate integration points and external dependencies
-   - Document workarounds and technical debt
-   - Note areas that differ from standard patterns
+3. Map the Reality:
+ - Identify ACTUAL patterns used (not theoretical best practices)
+ - Find where key business logic lives
+ - Locate integration points and external dependencies
+ - Document workarounds and technical debt
+ - Note areas that differ from standard patterns
 
-**IF PRD PROVIDED**: Also analyze what would need to change for the enhancement
+IF PRD PROVIDED: Also analyze what would need to change for the enhancement
 
 ### 3. Core Documentation Generation
 
 [[LLM: Generate a comprehensive BROWNFIELD architecture document that reflects the ACTUAL state of the codebase.
 
-**CRITICAL**: This is NOT an aspirational architecture document. Document what EXISTS, including:
+CRITICAL: This is NOT an aspirational architecture document. Document what EXISTS, including:
 
 - Technical debt and workarounds
 - Inconsistent patterns between different parts
@@ -98,7 +98,7 @@ CRITICAL: Before generating documentation, conduct extensive analysis of the exi
 - Integration constraints
 - Performance bottlenecks
 
-**Document Structure**:
+Document Structure:
 
 # [Project Name] Brownfield Architecture Document
 
@@ -113,20 +113,20 @@ This document captures the CURRENT STATE of the [Project Name] codebase, includi
 
 ### Change Log
 
-| Date   | Version | Description                 | Author    |
+| Date | Version | Description | Author |
 | ------ | ------- | --------------------------- | --------- |
-| [Date] | 1.0     | Initial brownfield analysis | [Analyst] |
+| [Date] | 1.0 | Initial brownfield analysis | [Analyst] |
 
 ## Quick Reference - Key Files and Entry Points
 
 ### Critical Files for Understanding the System
 
-- **Main Entry**: `src/index.js` (or actual entry point)
-- **Configuration**: `config/app.config.js`, `.env.example`
-- **Core Business Logic**: `src/services/`, `src/domain/`
-- **API Definitions**: `src/routes/` or link to OpenAPI spec
-- **Database Models**: `src/models/` or link to schema files
-- **Key Algorithms**: [List specific files with complex logic]
+- Main Entry: src/index.js (or actual entry point)
+- Configuration: config/app.config.js, .env.example
+- Core Business Logic: src/services/, src/domain/
+- API Definitions: src/routes/ or link to OpenAPI spec
+- Database Models: src/models/ or link to schema files
+- Key Algorithms: [List specific files with complex logic]
 
 ### If PRD Provided - Enhancement Impact Areas
 
@@ -138,11 +138,11 @@ This document captures the CURRENT STATE of the [Project Name] codebase, includi
 
 ### Actual Tech Stack (from package.json/requirements.txt)
 
-| Category  | Technology | Version | Notes                      |
+| Category | Technology | Version | Notes |
 | --------- | ---------- | ------- | -------------------------- |
-| Runtime   | Node.js    | 16.x    | [Any constraints]          |
-| Framework | Express    | 4.18.2  | [Custom middleware?]       |
-| Database  | PostgreSQL | 13      | [Connection pooling setup] |
+| Runtime | Node.js | 16.x | [Any constraints] |
+| Framework | Express | 4.18.2 | [Custom middleware?] |
+| Database | PostgreSQL | 13 | [Connection pooling setup] |
 
 etc...
 
@@ -156,25 +156,25 @@ etc...
 
 ### Project Structure (Actual)
 
-```text
+``text
 project-root/
 ├── src/
-│   ├── controllers/     # HTTP request handlers
-│   ├── services/        # Business logic (NOTE: inconsistent patterns between user and payment services)
-│   ├── models/          # Database models (Sequelize)
-│   ├── utils/           # Mixed bag - needs refactoring
-│   └── legacy/          # DO NOT MODIFY - old payment system still in use
-├── tests/               # Jest tests (60% coverage)
-├── scripts/             # Build and deployment scripts
-└── config/              # Environment configs
-```
+│ ├── controllers/ # HTTP request handlers
+│ ├── services/ # Business logic (NOTE: inconsistent patterns between user and payment services)
+│ ├── models/ # Database models (Sequelize)
+│ ├── utils/ # Mixed bag - needs refactoring
+│ └── legacy/ # DO NOT MODIFY - old payment system still in use
+├── tests/ # Jest tests (60% coverage)
+├── scripts/ # Build and deployment scripts
+└── config/ # Environment configs
+`
 
 ### Key Modules and Their Purpose
 
-- **User Management**: `src/services/userService.js` - Handles all user operations
-- **Authentication**: `src/middleware/auth.js` - JWT-based, custom implementation
-- **Payment Processing**: `src/legacy/payment.js` - CRITICAL: Do not refactor, tightly coupled
-- **[List other key modules with their actual files]**
+- User Management: src/services/userService.js - Handles all user operations
+- Authentication: src/middleware/auth.js - JWT-based, custom implementation
+- Payment Processing: src/legacy/payment.js - CRITICAL: Do not refactor, tightly coupled
+- [List other key modules with their actual files]
 
 ## Data Models and APIs
 
@@ -182,47 +182,47 @@ project-root/
 
 Instead of duplicating, reference actual model files:
 
-- **User Model**: See `src/models/User.js`
-- **Order Model**: See `src/models/Order.js`
-- **Related Types**: TypeScript definitions in `src/types/`
+- User Model: See src/models/User.js
+- Order Model: See src/models/Order.js
+- Related Types: TypeScript definitions in src/types/
 
 ### API Specifications
 
-- **OpenAPI Spec**: `docs/api/openapi.yaml` (if exists)
-- **Postman Collection**: `docs/api/postman-collection.json`
-- **Manual Endpoints**: [List any undocumented endpoints discovered]
+- OpenAPI Spec: docs/api/openapi.yaml (if exists)
+- Postman Collection: docs/api/postman-collection.json
+- Manual Endpoints: [List any undocumented endpoints discovered]
 
 ## Technical Debt and Known Issues
 
 ### Critical Technical Debt
 
-1. **Payment Service**: Legacy code in `src/legacy/payment.js` - tightly coupled, no tests
-2. **User Service**: Different pattern than other services, uses callbacks instead of promises
-3. **Database Migrations**: Manually tracked, no proper migration tool
-4. **[Other significant debt]**
+1. Payment Service: Legacy code in src/legacy/payment.js - tightly coupled, no tests
+2. User Service: Different pattern than other services, uses callbacks instead of promises
+3. Database Migrations: Manually tracked, no proper migration tool
+4. [Other significant debt]
 
 ### Workarounds and Gotchas
 
-- **Environment Variables**: Must set `NODE_ENV=production` even for staging (historical reason)
-- **Database Connections**: Connection pool hardcoded to 10, changing breaks payment service
-- **[Other workarounds developers need to know]**
+- Environment Variables: Must set NODE_ENV=production even for staging (historical reason)
+- Database Connections: Connection pool hardcoded to 10, changing breaks payment service
+- [Other workarounds developers need to know]
 
 ## Integration Points and External Dependencies
 
 ### External Services
 
-| Service  | Purpose  | Integration Type | Key Files                      |
+| Service | Purpose | Integration Type | Key Files |
 | -------- | -------- | ---------------- | ------------------------------ |
-| Stripe   | Payments | REST API         | `src/integrations/stripe/`     |
-| SendGrid | Emails   | SDK              | `src/services/emailService.js` |
+| Stripe | Payments | REST API | src/integrations/stripe/ |
+| SendGrid | Emails | SDK | src/services/emailService.js |
 
 etc...
 
 ### Internal Integration Points
 
-- **Frontend Communication**: REST API on port 3000, expects specific headers
-- **Background Jobs**: Redis queue, see `src/workers/`
-- **[Other integrations]**
+- Frontend Communication: REST API on port 3000, expects specific headers
+- Background Jobs: Redis queue, see src/workers/
+- [Other integrations]
 
 ## Development and Deployment
 
@@ -230,29 +230,29 @@ etc...
 
 1. Actual steps that work (not ideal steps)
 2. Known issues with setup
-3. Required environment variables (see `.env.example`)
+3. Required environment variables (see .env.example)
 
 ### Build and Deployment Process
 
-- **Build Command**: `npm run build` (webpack config in `webpack.config.js`)
-- **Deployment**: Manual deployment via `scripts/deploy.sh`
-- **Environments**: Dev, Staging, Prod (see `config/environments/`)
+- Build Command: npm run build (webpack config in webpack.config.js)
+- Deployment: Manual deployment via scripts/deploy.sh
+- Environments: Dev, Staging, Prod (see config/environments/)
 
 ## Testing Reality
 
 ### Current Test Coverage
 
 - Unit Tests: 60% coverage (Jest)
-- Integration Tests: Minimal, in `tests/integration/`
+- Integration Tests: Minimal, in tests/integration/
 - E2E Tests: None
 - Manual Testing: Primary QA method
 
 ### Running Tests
 
-```bash
-npm test           # Runs unit tests
-npm run test:integration  # Runs integration tests (requires local DB)
-```
+`bash
+npm test # Runs unit tests
+npm run test:integration # Runs integration tests (requires local DB)
+`
 
 ## If Enhancement PRD Provided - Impact Analysis
 
@@ -260,51 +260,51 @@ npm run test:integration  # Runs integration tests (requires local DB)
 
 Based on the enhancement requirements, these files will be affected:
 
-- `src/services/userService.js` - Add new user fields
-- `src/models/User.js` - Update schema
-- `src/routes/userRoutes.js` - New endpoints
+- src/services/userService.js - Add new user fields
+- src/models/User.js - Update schema
+- src/routes/userRoutes.js - New endpoints
 - [etc...]
 
 ### New Files/Modules Needed
 
-- `src/services/newFeatureService.js` - New business logic
-- `src/models/NewFeature.js` - New data model
+- src/services/newFeatureService.js - New business logic
+- src/models/NewFeature.js - New data model
 - [etc...]
 
 ### Integration Considerations
 
 - Will need to integrate with existing auth middleware
-- Must follow existing response format in `src/utils/responseFormatter.js`
+- Must follow existing response format in src/utils/responseFormatter.js
 - [Other integration points]
 
 ## Appendix - Useful Commands and Scripts
 
 ### Frequently Used Commands
 
-```bash
-npm run dev         # Start development server
-npm run build       # Production build
-npm run migrate     # Run database migrations
-npm run seed        # Seed test data
-```
+`bash
+npm run dev # Start development server
+npm run build # Production build
+npm run migrate # Run database migrations
+npm run seed # Seed test data
+`
 
 ### Debugging and Troubleshooting
 
-- **Logs**: Check `logs/app.log` for application logs
-- **Debug Mode**: Set `DEBUG=app:*` for verbose logging
-- **Common Issues**: See `docs/troubleshooting.md`]]
+- Logs: Check logs/app.log for application logs
+- Debug Mode: Set DEBUG=app:* for verbose logging
+- Common Issues: See docs/troubleshooting.md]]
 
 ### 4. Document Delivery
 
-1. **In Web UI (Gemini, ChatGPT, Claude)**:
-   - Present the entire document in one response (or multiple if too long)
-   - Tell user to copy and save as `docs/brownfield-architecture.md` or `docs/project-architecture.md`
-   - Mention it can be sharded later in IDE if needed
+1. In Web UI (Gemini, ChatGPT, Claude):
+ - Present the entire document in one response (or multiple if too long)
+ - Tell user to copy and save as docs/brownfield-architecture.md or docs/project-architecture.md
+ - Mention it can be sharded later in IDE if needed
 
-2. **In IDE Environment**:
-   - Create the document as `docs/brownfield-architecture.md`
-   - Inform user this single document contains all architectural information
-   - Can be sharded later using PO agent if desired
+2. In IDE Environment:
+ - Create the document as docs/brownfield-architecture.md`
+ - Inform user this single document contains all architectural information
+ - Can be sharded later using PO agent if desired
 
 The document should be comprehensive enough that future agents can understand:
 
@@ -318,11 +318,11 @@ The document should be comprehensive enough that future agents can understand:
 
 CRITICAL: Before finalizing the document:
 
-1. **Accuracy Check**: Verify all technical details match the actual codebase
-2. **Completeness Review**: Ensure all major system components are documented
-3. **Focus Validation**: If user provided scope, verify relevant areas are emphasized
-4. **Clarity Assessment**: Check that explanations are clear for AI agents
-5. **Navigation**: Ensure document has clear section structure for easy reference
+1. Accuracy Check: Verify all technical details match the actual codebase
+2. Completeness Review: Ensure all major system components are documented
+3. Focus Validation: If user provided scope, verify relevant areas are emphasized
+4. Clarity Assessment: Check that explanations are clear for AI agents
+5. Navigation: Ensure document has clear section structure for easy reference
 
 Apply the advanced elicitation task after major sections to refine based on user feedback.
 

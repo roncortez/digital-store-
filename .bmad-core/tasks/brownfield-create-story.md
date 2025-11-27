@@ -8,7 +8,7 @@ Create a single user story for very small brownfield enhancements that can be co
 
 ## When to Use This Task
 
-**Use this task when:**
+Use this task when:
 
 - The enhancement can be completed in a single story
 - No new architecture or significant design is required
@@ -16,13 +16,13 @@ Create a single user story for very small brownfield enhancements that can be co
 - Integration is straightforward with minimal risk
 - Change is isolated with clear boundaries
 
-**Use brownfield-create-epic when:**
+Use brownfield-create-epic when:
 
 - The enhancement requires 2-3 coordinated stories
 - Some design work is needed
 - Multiple integration points are involved
 
-**Use the full brownfield PRD/Architecture process when:**
+Use the full brownfield PRD/Architecture process when:
 
 - The enhancement requires multiple coordinated stories
 - Architectural planning is needed
@@ -34,14 +34,14 @@ Create a single user story for very small brownfield enhancements that can be co
 
 Gather minimal but essential context about the existing project:
 
-**Current System Context:**
+Current System Context:
 
 - [ ] Relevant existing functionality identified
 - [ ] Technology stack for this area noted
 - [ ] Integration point(s) clearly understood
 - [ ] Existing patterns for similar work identified
 
-**Change Scope:**
+Change Scope:
 
 - [ ] Specific change clearly defined
 - [ ] Impact boundaries identified
@@ -63,7 +63,7 @@ So that {{clear benefit/value}}.
 
 #### Story Context
 
-**Existing System Integration:**
+Existing System Integration:
 
 - Integrates with: {{existing component/system}}
 - Technology: {{relevant tech stack}}
@@ -72,21 +72,21 @@ So that {{clear benefit/value}}.
 
 #### Acceptance Criteria
 
-**Functional Requirements:**
+Functional Requirements:
 
 1. {{Primary functional requirement}}
 2. {{Secondary functional requirement (if any)}}
 3. {{Integration requirement}}
 
-**Integration Requirements:** 4. Existing {{relevant functionality}} continues to work unchanged 5. New functionality follows existing {{pattern}} pattern 6. Integration with {{system/component}} maintains current behavior
+Integration Requirements: 4. Existing {{relevant functionality}} continues to work unchanged 5. New functionality follows existing {{pattern}} pattern 6. Integration with {{system/component}} maintains current behavior
 
-**Quality Requirements:** 7. Change is covered by appropriate tests 8. Documentation is updated if needed 9. No regression in existing functionality verified
+Quality Requirements: 7. Change is covered by appropriate tests 8. Documentation is updated if needed 9. No regression in existing functionality verified
 
 #### Technical Notes
 
-- **Integration Approach:** {{how it connects to existing system}}
-- **Existing Pattern Reference:** {{link or description of pattern to follow}}
-- **Key Constraints:** {{any important limitations or requirements}}
+- Integration Approach: {{how it connects to existing system}}
+- Existing Pattern Reference: {{link or description of pattern to follow}}
+- Key Constraints: {{any important limitations or requirements}}
 
 #### Definition of Done
 
@@ -99,13 +99,13 @@ So that {{clear benefit/value}}.
 
 ### 3. Risk and Compatibility Check
 
-**Minimal Risk Assessment:**
+Minimal Risk Assessment:
 
-- **Primary Risk:** {{main risk to existing system}}
-- **Mitigation:** {{simple mitigation approach}}
-- **Rollback:** {{how to undo if needed}}
+- Primary Risk: {{main risk to existing system}}
+- Mitigation: {{simple mitigation approach}}
+- Rollback: {{how to undo if needed}}
 
-**Compatibility Verification:**
+Compatibility Verification:
 
 - [ ] No breaking changes to existing APIs
 - [ ] Database changes (if any) are additive only
@@ -116,14 +116,14 @@ So that {{clear benefit/value}}.
 
 Before finalizing the story, confirm:
 
-**Scope Validation:**
+Scope Validation:
 
 - [ ] Story can be completed in one development session
 - [ ] Integration approach is straightforward
 - [ ] Follows existing patterns exactly
 - [ ] No design or architecture work required
 
-**Clarity Check:**
+Clarity Check:
 
 - [ ] Story requirements are unambiguous
 - [ ] Integration points are clearly specified

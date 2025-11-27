@@ -8,7 +8,7 @@ Comprehensive guide for determining appropriate test levels (unit, integration, 
 
 ### Unit Tests
 
-**When to use:**
+When to use:
 
 - Testing pure functions and business logic
 - Algorithm correctness
@@ -16,26 +16,26 @@ Comprehensive guide for determining appropriate test levels (unit, integration, 
 - Error handling in isolated components
 - Complex calculations or state machines
 
-**Characteristics:**
+Characteristics:
 
 - Fast execution (immediate feedback)
 - No external dependencies (DB, API, file system)
 - Highly maintainable and stable
 - Easy to debug failures
 
-**Example scenarios:**
+Example scenarios:
 
-```yaml
+``yaml
 unit_test:
-  component: 'PriceCalculator'
-  scenario: 'Calculate discount with multiple rules'
-  justification: 'Complex business logic with multiple branches'
-  mock_requirements: 'None - pure function'
-```
+ component: 'PriceCalculator'
+ scenario: 'Calculate discount with multiple rules'
+ justification: 'Complex business logic with multiple branches'
+ mock_requirements: 'None - pure function'
+`
 
 ### Integration Tests
 
-**When to use:**
+When to use:
 
 - Component interaction verification
 - Database operations and transactions
@@ -43,26 +43,26 @@ unit_test:
 - Service-to-service communication
 - Middleware and interceptor behavior
 
-**Characteristics:**
+Characteristics:
 
 - Moderate execution time
 - Tests component boundaries
 - May use test databases or containers
 - Validates system integration points
 
-**Example scenarios:**
+Example scenarios:
 
-```yaml
+`yaml
 integration_test:
-  components: ['UserService', 'AuthRepository']
-  scenario: 'Create user with role assignment'
-  justification: 'Critical data flow between service and persistence'
-  test_environment: 'In-memory database'
-```
+ components: ['UserService', 'AuthRepository']
+ scenario: 'Create user with role assignment'
+ justification: 'Critical data flow between service and persistence'
+ test_environment: 'In-memory database'
+`
 
 ### End-to-End Tests
 
-**When to use:**
+When to use:
 
 - Critical user journeys
 - Cross-system workflows
@@ -70,22 +70,22 @@ integration_test:
 - Compliance and regulatory requirements
 - Final validation before release
 
-**Characteristics:**
+Characteristics:
 
 - Slower execution
 - Tests complete workflows
 - Requires full environment setup
 - Most realistic but most brittle
 
-**Example scenarios:**
+Example scenarios:
 
-```yaml
+`yaml
 e2e_test:
-  journey: 'Complete checkout process'
-  scenario: 'User purchases with saved payment method'
-  justification: 'Revenue-critical path requiring full validation'
-  environment: 'Staging with test payment gateway'
-```
+ journey: 'Complete checkout process'
+ scenario: 'User purchases with saved payment method'
+ justification: 'Revenue-critical path requiring full validation'
+ environment: 'Staging with test payment gateway'
+`
 
 ## Test Level Selection Rules
 
@@ -119,13 +119,13 @@ e2e_test:
 
 ## Duplicate Coverage Guard
 
-**Before adding any test, check:**
+Before adding any test, check:
 
 1. Is this already tested at a lower level?
 2. Can a unit test cover this instead of integration?
 3. Can an integration test cover this instead of E2E?
 
-**Coverage overlap is only acceptable when:**
+Coverage overlap is only acceptable when:
 
 - Testing different aspects (unit: logic, integration: interaction, e2e: user experience)
 - Critical paths requiring defense in depth
@@ -133,16 +133,16 @@ e2e_test:
 
 ## Test Naming Conventions
 
-- Unit: `test_{component}_{scenario}`
-- Integration: `test_{flow}_{interaction}`
-- E2E: `test_{journey}_{outcome}`
+- Unit: test_{component}_{scenario}
+- Integration: test_{flow}_{interaction}
+- E2E: test_{journey}_{outcome}
 
 ## Test ID Format
 
-`{EPIC}.{STORY}-{LEVEL}-{SEQ}`
+{EPIC}.{STORY}-{LEVEL}-{SEQ}
 
 Examples:
 
-- `1.3-UNIT-001`
-- `1.3-INT-002`
-- `1.3-E2E-001`
+- 1.3-UNIT-001
+- 1.3-INT-002
+- 1.3-E2E-001`

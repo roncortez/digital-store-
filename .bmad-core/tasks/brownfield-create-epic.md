@@ -8,7 +8,7 @@ Create a single epic for smaller brownfield enhancements that don't require the 
 
 ## When to Use This Task
 
-**Use this task when:**
+Use this task when:
 
 - The enhancement can be completed in 1-3 stories
 - No significant architectural changes are required
@@ -16,7 +16,7 @@ Create a single epic for smaller brownfield enhancements that don't require the 
 - Integration complexity is minimal
 - Risk to existing system is low
 
-**Use the full brownfield PRD/Architecture process when:**
+Use the full brownfield PRD/Architecture process when:
 
 - The enhancement requires multiple coordinated stories
 - Architectural planning is needed
@@ -29,14 +29,14 @@ Create a single epic for smaller brownfield enhancements that don't require the 
 
 Before creating the epic, gather essential information about the existing project:
 
-**Existing Project Context:**
+Existing Project Context:
 
 - [ ] Project purpose and current functionality understood
 - [ ] Existing technology stack identified
 - [ ] Current architecture patterns noted
 - [ ] Integration points with existing system identified
 
-**Enhancement Scope:**
+Enhancement Scope:
 
 - [ ] Enhancement clearly defined and scoped
 - [ ] Impact on existing functionality assessed
@@ -57,13 +57,13 @@ Create a focused epic following this structure:
 
 #### Epic Description
 
-**Existing System Context:**
+Existing System Context:
 
 - Current relevant functionality: {{brief description}}
 - Technology stack: {{relevant existing technologies}}
 - Integration points: {{where new work connects to existing system}}
 
-**Enhancement Details:**
+Enhancement Details:
 
 - What's being added/changed: {{clear description}}
 - How it integrates: {{integration approach}}
@@ -73,9 +73,9 @@ Create a focused epic following this structure:
 
 List 1-3 focused stories that complete the epic:
 
-1. **Story 1:** {{Story title and brief description}}
-2. **Story 2:** {{Story title and brief description}}
-3. **Story 3:** {{Story title and brief description}}
+1. Story 1: {{Story title and brief description}}
+2. Story 2: {{Story title and brief description}}
+3. Story 3: {{Story title and brief description}}
 
 #### Compatibility Requirements
 
@@ -86,9 +86,9 @@ List 1-3 focused stories that complete the epic:
 
 #### Risk Mitigation
 
-- **Primary Risk:** {{main risk to existing system}}
-- **Mitigation:** {{how risk will be addressed}}
-- **Rollback Plan:** {{how to undo changes if needed}}
+- Primary Risk: {{main risk to existing system}}
+- Mitigation: {{how risk will be addressed}}
+- Rollback Plan: {{how to undo changes if needed}}
 
 #### Definition of Done
 
@@ -102,21 +102,21 @@ List 1-3 focused stories that complete the epic:
 
 Before finalizing the epic, ensure:
 
-**Scope Validation:**
+Scope Validation:
 
 - [ ] Epic can be completed in 1-3 stories maximum
 - [ ] No architectural documentation is required
 - [ ] Enhancement follows existing patterns
 - [ ] Integration complexity is manageable
 
-**Risk Assessment:**
+Risk Assessment:
 
 - [ ] Risk to existing system is low
 - [ ] Rollback plan is feasible
 - [ ] Testing approach covers existing functionality
 - [ ] Team has sufficient knowledge of integration points
 
-**Completeness Check:**
+Completeness Check:
 
 - [ ] Epic goal is clear and achievable
 - [ ] Stories are properly scoped
@@ -127,9 +127,7 @@ Before finalizing the epic, ensure:
 
 Once the epic is validated, provide this handoff to the Story Manager:
 
----
-
-**Story Manager Handoff:**
+Story Manager Handoff:
 
 "Please develop detailed user stories for this brownfield epic. Key considerations:
 
@@ -140,8 +138,6 @@ Once the epic is validated, provide this handoff to the Story Manager:
 - Each story must include verification that existing functionality remains intact
 
 The epic should maintain system integrity while delivering {{epic goal}}."
-
----
 
 ## Success Criteria
 

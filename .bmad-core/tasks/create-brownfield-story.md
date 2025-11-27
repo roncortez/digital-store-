@@ -8,7 +8,7 @@ Create detailed, implementation-ready stories for brownfield projects where trad
 
 ## When to Use This Task
 
-**Use this task when:**
+Use this task when:
 
 - Working on brownfield projects with non-standard documentation
 - Stories need to be created from document-project output
@@ -16,7 +16,7 @@ Create detailed, implementation-ready stories for brownfield projects where trad
 - Existing project documentation doesn't follow BMad v4+ structure
 - Need to gather additional context from user during story creation
 
-**Use create-next-story when:**
+Use create-next-story when:
 
 - Working with properly sharded PRD and v4 architecture documents
 - Following standard greenfield or well-documented brownfield workflow
@@ -28,21 +28,21 @@ Create detailed, implementation-ready stories for brownfield projects where trad
 
 Check for available documentation in this order:
 
-1. **Sharded PRD/Architecture** (docs/prd/, docs/architecture/)
-   - If found, recommend using create-next-story task instead
+1. Sharded PRD/Architecture (docs/prd/, docs/architecture/)
+ - If found, recommend using create-next-story task instead
 
-2. **Brownfield Architecture Document** (docs/brownfield-architecture.md or similar)
-   - Created by document-project task
-   - Contains actual system state, technical debt, workarounds
+2. Brownfield Architecture Document (docs/brownfield-architecture.md or similar)
+ - Created by document-project task
+ - Contains actual system state, technical debt, workarounds
 
-3. **Brownfield PRD** (docs/prd.md)
-   - May contain embedded technical details
+3. Brownfield PRD (docs/prd.md)
+ - May contain embedded technical details
 
-4. **Epic Files** (docs/epics/ or similar)
-   - Created by brownfield-create-epic task
+4. Epic Files (docs/epics/ or similar)
+ - Created by brownfield-create-epic task
 
-5. **User-Provided Documentation**
-   - Ask user to specify location and format
+5. User-Provided Documentation
+ - Ask user to specify location and format
 
 ### 1. Story Identification and Context Gathering
 
@@ -50,16 +50,16 @@ Check for available documentation in this order:
 
 Based on available documentation:
 
-- **From Brownfield PRD**: Extract stories from epic sections
-- **From Epic Files**: Read epic definition and story list
-- **From User Direction**: Ask user which specific enhancement to implement
-- **No Clear Source**: Work with user to define the story scope
+- From Brownfield PRD: Extract stories from epic sections
+- From Epic Files: Read epic definition and story list
+- From User Direction: Ask user which specific enhancement to implement
+- No Clear Source: Work with user to define the story scope
 
 #### 1.2 Gather Essential Context
 
 CRITICAL: For brownfield stories, you MUST gather enough context for safe implementation. Be prepared to ask the user for missing information.
 
-**Required Information Checklist:**
+Required Information Checklist:
 
 - [ ] What existing functionality might be affected?
 - [ ] What are the integration points with current code?
@@ -75,20 +75,20 @@ If any required information is missing, list the missing information and ask the
 
 If using brownfield-architecture.md from document-project:
 
-- **Technical Debt Section**: Note any workarounds affecting this story
-- **Key Files Section**: Identify files that will need modification
-- **Integration Points**: Find existing integration patterns
-- **Known Issues**: Check if story touches problematic areas
-- **Actual Tech Stack**: Verify versions and constraints
+- Technical Debt Section: Note any workarounds affecting this story
+- Key Files Section: Identify files that will need modification
+- Integration Points: Find existing integration patterns
+- Known Issues: Check if story touches problematic areas
+- Actual Tech Stack: Verify versions and constraints
 
 #### 2.2 From Brownfield PRD
 
 If using brownfield PRD:
 
-- **Technical Constraints Section**: Extract all relevant constraints
-- **Integration Requirements**: Note compatibility requirements
-- **Code Organization**: Follow specified patterns
-- **Risk Assessment**: Understand potential impacts
+- Technical Constraints Section: Extract all relevant constraints
+- Integration Requirements: Note compatibility requirements
+- Code Organization: Follow specified patterns
+- Risk Assessment: Understand potential impacts
 
 #### 2.3 From User Documentation
 
@@ -105,7 +105,7 @@ Ask the user to help identify:
 
 Start with the story template, filling in what's known:
 
-```markdown
+``markdown
 # Story {{Enhancement Title}}
 
 ## Status: Draft
@@ -121,7 +121,7 @@ so that {{value_delivered}}.
 - Source Document: {{document name/type}}
 - Enhancement Type: {{single feature/bug fix/integration/etc}}
 - Existing System Impact: {{brief assessment}}
-```
+`
 
 #### 3.2 Develop Acceptance Criteria
 
@@ -141,7 +141,7 @@ Critical: This is where you'll need to be interactive with the user if informati
 
 Create Dev Technical Guidance section with available information:
 
-````markdown
+``markdown
 ## Dev Technical Guidance
 
 ### Existing System Context
@@ -173,30 +173,30 @@ Based on gathered context, create tasks that:
 
 Example task structure for brownfield:
 
-```markdown
+`markdown
 ## Tasks / Subtasks
 
 - [ ] Task 1: Analyze existing {{component/feature}} implementation
-  - [ ] Review {{specific files}} for current patterns
-  - [ ] Document integration points
-  - [ ] Identify potential impacts
+ - [ ] Review {{specific files}} for current patterns
+ - [ ] Document integration points
+ - [ ] Identify potential impacts
 
 - [ ] Task 2: Implement {{new functionality}}
-  - [ ] Follow pattern from {{example file}}
-  - [ ] Integrate with {{existing component}}
-  - [ ] Maintain compatibility with {{constraint}}
+ - [ ] Follow pattern from {{example file}}
+ - [ ] Integrate with {{existing component}}
+ - [ ] Maintain compatibility with {{constraint}}
 
 - [ ] Task 3: Verify existing functionality
-  - [ ] Test {{existing feature 1}} still works
-  - [ ] Verify {{integration point}} behavior unchanged
-  - [ ] Check performance impact
+ - [ ] Test {{existing feature 1}} still works
+ - [ ] Verify {{integration point}} behavior unchanged
+ - [ ] Check performance impact
 
 - [ ] Task 4: Add tests
-  - [ ] Unit tests following {{project test pattern}}
-  - [ ] Integration test for {{integration point}}
-  - [ ] Update existing tests if needed
-```
-````
+ - [ ] Unit tests following {{project test pattern}}
+ - [ ] Integration test for {{integration point}}
+ - [ ] Update existing tests if needed
+`
+``
 
 ### 5. Risk Assessment and Mitigation
 
@@ -204,14 +204,14 @@ CRITICAL: for brownfield - always include risk assessment
 
 Add section for brownfield-specific risks:
 
-```markdown
+`markdown
 ## Risk Assessment
 
 ### Implementation Risks
 
-- **Primary Risk**: {{main risk to existing system}}
-- **Mitigation**: {{how to address}}
-- **Verification**: {{how to confirm safety}}
+- Primary Risk: {{main risk to existing system}}
+- Mitigation: {{how to address}}
+- Verification: {{how to confirm safety}}
 
 ### Rollback Plan
 
@@ -222,39 +222,39 @@ Add section for brownfield-specific risks:
 - [ ] Existing {{feature}} tested before changes
 - [ ] Changes can be feature-flagged or isolated
 - [ ] Rollback procedure documented
-```
+`
 
 ### 6. Final Story Validation
 
 Before finalizing:
 
-1. **Completeness Check**:
-   - [ ] Story has clear scope and acceptance criteria
-   - [ ] Technical context is sufficient for implementation
-   - [ ] Integration approach is defined
-   - [ ] Risks are identified with mitigation
+1. Completeness Check:
+ - [ ] Story has clear scope and acceptance criteria
+ - [ ] Technical context is sufficient for implementation
+ - [ ] Integration approach is defined
+ - [ ] Risks are identified with mitigation
 
-2. **Safety Check**:
-   - [ ] Existing functionality protection included
-   - [ ] Rollback plan is feasible
-   - [ ] Testing covers both new and existing features
+2. Safety Check:
+ - [ ] Existing functionality protection included
+ - [ ] Rollback plan is feasible
+ - [ ] Testing covers both new and existing features
 
-3. **Information Gaps**:
-   - [ ] All critical missing information gathered from user
-   - [ ] Remaining unknowns documented for dev agent
-   - [ ] Exploration tasks added where needed
+3. Information Gaps:
+ - [ ] All critical missing information gathered from user
+ - [ ] Remaining unknowns documented for dev agent
+ - [ ] Exploration tasks added where needed
 
 ### 7. Story Output Format
 
 Save the story with appropriate naming:
 
-- If from epic: `docs/stories/epic-{n}-story-{m}.md`
-- If standalone: `docs/stories/brownfield-{feature-name}.md`
+- If from epic: docs/stories/epic-{n}-story-{m}.md
+- If standalone: docs/stories/brownfield-{feature-name}.md
 - If sequential: Follow existing story numbering
 
 Include header noting documentation context:
 
-```markdown
+`markdown
 # Story: {{Title}}
 
 <!-- Source: {{documentation type used}} -->
@@ -263,13 +263,13 @@ Include header noting documentation context:
 ## Status: Draft
 
 [Rest of story content...]
-```
+`
 
 ### 8. Handoff Communication
 
 Provide clear handoff to the user:
 
-```text
+`text
 Brownfield story created: {{story title}}
 
 Source Documentation: {{what was used}}
@@ -290,7 +290,7 @@ Next Steps:
 2. Verify integration approach aligns with your system
 3. Approve story or request adjustments
 4. Dev agent can then implement with safety checks
-```
+``
 
 ## Success Criteria
 

@@ -10,16 +10,16 @@ PROJECT TYPE DETECTION:
 First, determine the project type by checking:
 
 1. Is this a GREENFIELD project (new from scratch)?
-   - Look for: New project initialization, no existing codebase references
-   - Check for: prd.md, architecture.md, new project setup stories
+ - Look for: New project initialization, no existing codebase references
+ - Check for: prd.md, architecture.md, new project setup stories
 
 2. Is this a BROWNFIELD project (enhancing existing system)?
-   - Look for: References to existing codebase, enhancement/modification language
-   - Check for: prd.md, architecture.md, existing system analysis
+ - Look for: References to existing codebase, enhancement/modification language
+ - Check for: prd.md, architecture.md, existing system analysis
 
 3. Does the project include UI/UX components?
-   - Check for: frontend-architecture.md, UI/UX specifications, design files
-   - Look for: Frontend stories, component specifications, user interface mentions
+ - Check for: frontend-architecture.md, UI/UX specifications, design files
+ - Look for: Frontend stories, component specifications, user interface mentions
 
 DOCUMENT REQUIREMENTS:
 Based on project type, ensure you have access to:
@@ -347,55 +347,55 @@ Ask the user if they want to work through the checklist:
 Generate a comprehensive validation report that adapts to project type:
 
 1. Executive Summary
-   - Project type: [Greenfield/Brownfield] with [UI/No UI]
-   - Overall readiness (percentage)
-   - Go/No-Go recommendation
-   - Critical blocking issues count
-   - Sections skipped due to project type
+ - Project type: [Greenfield/Brownfield] with [UI/No UI]
+ - Overall readiness (percentage)
+ - Go/No-Go recommendation
+ - Critical blocking issues count
+ - Sections skipped due to project type
 
 2. Project-Specific Analysis
 
-   FOR GREENFIELD:
-   - Setup completeness
-   - Dependency sequencing
-   - MVP scope appropriateness
-   - Development timeline feasibility
+ FOR GREENFIELD:
+ - Setup completeness
+ - Dependency sequencing
+ - MVP scope appropriateness
+ - Development timeline feasibility
 
-   FOR BROWNFIELD:
-   - Integration risk level (High/Medium/Low)
-   - Existing system impact assessment
-   - Rollback readiness
-   - User disruption potential
+ FOR BROWNFIELD:
+ - Integration risk level (High/Medium/Low)
+ - Existing system impact assessment
+ - Rollback readiness
+ - User disruption potential
 
 3. Risk Assessment
-   - Top 5 risks by severity
-   - Mitigation recommendations
-   - Timeline impact of addressing issues
-   - [BROWNFIELD] Specific integration risks
+ - Top 5 risks by severity
+ - Mitigation recommendations
+ - Timeline impact of addressing issues
+ - [BROWNFIELD] Specific integration risks
 
 4. MVP Completeness
-   - Core features coverage
-   - Missing essential functionality
-   - Scope creep identified
-   - True MVP vs over-engineering
+ - Core features coverage
+ - Missing essential functionality
+ - Scope creep identified
+ - True MVP vs over-engineering
 
 5. Implementation Readiness
-   - Developer clarity score (1-10)
-   - Ambiguous requirements count
-   - Missing technical details
-   - [BROWNFIELD] Integration point clarity
+ - Developer clarity score (1-10)
+ - Ambiguous requirements count
+ - Missing technical details
+ - [BROWNFIELD] Integration point clarity
 
 6. Recommendations
-   - Must-fix before development
-   - Should-fix for quality
-   - Consider for improvement
-   - Post-MVP deferrals
+ - Must-fix before development
+ - Should-fix for quality
+ - Consider for improvement
+ - Post-MVP deferrals
 
 7. [BROWNFIELD ONLY] Integration Confidence
-   - Confidence in preserving existing functionality
-   - Rollback procedure completeness
-   - Monitoring coverage for integration points
-   - Support team readiness
+ - Confidence in preserving existing functionality
+ - Rollback procedure completeness
+ - Monitoring coverage for integration points
+ - Support team readiness
 
 After presenting the report, ask if the user wants:
 
@@ -406,18 +406,18 @@ After presenting the report, ask if the user wants:
 
 ### Category Statuses
 
-| Category                                | Status | Critical Issues |
+| Category | Status | Critical Issues |
 | --------------------------------------- | ------ | --------------- |
-| 1. Project Setup & Initialization       | _TBD_  |                 |
-| 2. Infrastructure & Deployment          | _TBD_  |                 |
-| 3. External Dependencies & Integrations | _TBD_  |                 |
-| 4. UI/UX Considerations                 | _TBD_  |                 |
-| 5. User/Agent Responsibility            | _TBD_  |                 |
-| 6. Feature Sequencing & Dependencies    | _TBD_  |                 |
-| 7. Risk Management (Brownfield)         | _TBD_  |                 |
-| 8. MVP Scope Alignment                  | _TBD_  |                 |
-| 9. Documentation & Handoff              | _TBD_  |                 |
-| 10. Post-MVP Considerations             | _TBD_  |                 |
+| 1. Project Setup & Initialization | _TBD_ | |
+| 2. Infrastructure & Deployment | _TBD_ | |
+| 3. External Dependencies & Integrations | _TBD_ | |
+| 4. UI/UX Considerations | _TBD_ | |
+| 5. User/Agent Responsibility | _TBD_ | |
+| 6. Feature Sequencing & Dependencies | _TBD_ | |
+| 7. Risk Management (Brownfield) | _TBD_ | |
+| 8. MVP Scope Alignment | _TBD_ | |
+| 9. Documentation & Handoff | _TBD_ | |
+| 10. Post-MVP Considerations | _TBD_ | |
 
 ### Critical Deficiencies
 
@@ -429,6 +429,6 @@ After presenting the report, ask if the user wants:
 
 ### Final Decision
 
-- **APPROVED**: The plan is comprehensive, properly sequenced, and ready for implementation.
-- **CONDITIONAL**: The plan requires specific adjustments before proceeding.
-- **REJECTED**: The plan requires significant revision to address critical deficiencies.
+- APPROVED: The plan is comprehensive, properly sequenced, and ready for implementation.
+- CONDITIONAL: The plan requires specific adjustments before proceeding.
+- REJECTED: The plan requires significant revision to address critical deficiencies.

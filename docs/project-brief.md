@@ -6,10 +6,10 @@
 
 The digital store is an innovative online platform that empowers users to buy and sell used products, extracting maximum value from pre-owned items while fostering customer loyalty through a rewards program. Users earn points not only from their purchases but also by dropping off used products for resale, with these points redeemable for exclusive benefits from partner companies. This creates a sustainable, community-driven marketplace that promotes reuse, rewards faithful customers, and builds strategic partnerships to enhance the overall shopping experience.
 
-- **Product Concept**: A digital marketplace for used products with integrated loyalty rewards, enabling seamless buying, selling, and drop-off processes while gamifying customer engagement through points-based benefits.
-- **Primary Problem Solved**: Consumers lack convenient, rewarding ways to monetize used products and earn ongoing benefits from their shopping loyalty, leading to underutilized goods and missed opportunities for sustainable consumption.
-- **Target Market**: Eco-conscious consumers, budget shoppers, and frequent buyers seeking value from used goods, particularly those interested in sustainable practices and reward-based shopping experiences.
-- **Key Value Proposition**: Transform used products into assets through easy resale and drop-off options, while rewarding customer fidelity with points redeemable for partner benefits, creating a win-win ecosystem for users, sellers, and businesses.
+- Product Concept: A digital marketplace for used products with integrated loyalty rewards, enabling seamless buying, selling, and drop-off processes while gamifying customer engagement through points-based benefits.
+- Primary Problem Solved: Consumers lack convenient, rewarding ways to monetize used products and earn ongoing benefits from their shopping loyalty, leading to underutilized goods and missed opportunities for sustainable consumption.
+- Target Market: Eco-conscious consumers, budget shoppers, and frequent buyers seeking value from used goods, particularly those interested in sustainable practices and reward-based shopping experiences.
+- Key Value Proposition: Transform used products into assets through easy resale and drop-off options, while rewarding customer fidelity with points redeemable for partner benefits, creating a win-win ecosystem for users, sellers, and businesses.
 
 ## Problem Statement
 
@@ -23,18 +23,18 @@ Addressing this problem now is urgent amid intensifying competition from platfor
 
 ## Proposed Solution
 
-**Core Concept and Approach:**  
+Core Concept and Approach:  
 The proposed solution is a comprehensive digital store platform built as a full-stack web application using Node.js and Express for the backend, MongoDB for data storage, and React with Vite for the frontend. The platform will enable users to register, authenticate securely, list and browse products, manage orders, and make donations to charitable causes, creating a seamless ecosystem for buying, selling, and giving back.
 
-**Key Differentiators from Existing Solutions:**  
+Key Differentiators from Existing Solutions:  
 - Integrated donation feature that allows users to contribute to social causes directly within the purchasing flow, setting it apart from standard e-commerce platforms.  
 - Emphasis on a modern, responsive user interface that prioritizes accessibility and ease of use across devices, reducing friction for both buyers and sellers.  
 - Strong focus on security (e.g., JWT-based authentication) and data privacy to build trust in a competitive market.
 
-**Why This Solution Will Succeed Where Others Haven't:**  
+Why This Solution Will Succeed Where Others Haven't:  
 This solution addresses the growing demand for socially conscious commerce by combining reliable e-commerce functionality with charitable giving, appealing to ethical consumers who want their purchases to have a positive impact. By leveraging scalable, proven technologies and prioritizing user experience, it overcomes common barriers like complex interfaces or security concerns that plague many existing platforms, potentially driving higher user retention and word-of-mouth growth.
 
-**High-level Vision for the Product:**  
+High-level Vision for the Product:  
 To become a leading digital marketplace that seamlessly integrates commerce with social impact, empowering users to buy, sell, and donate in a trustworthy environment that fosters community and drives positive change, while scaling to support a global user base.
 
 <!-- Additional sections pending: Target Users, Goals & Success Metrics, MVP Scope, Post-MVP Vision, Technical Considerations, Constraints & Assumptions, Risks & Open Questions, Appendices, Next Steps -->
