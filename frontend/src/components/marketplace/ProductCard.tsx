@@ -1,19 +1,23 @@
 import AddToCartButton from "./AddToCartButton";
+import { Link } from "react-router-dom";
 
 interface ProductCardProps {
+    id: number;
     name: string;
     price: number;
     description: string;
 }
 
 
-export default function ProductCard({ name, price, description }: ProductCardProps) {
+export default function ProductCard({ id, name, price, description }: ProductCardProps) {
     return (
         <div className="border border-gray-200 rounded-md">
             {/* Imagen placeholder */}
-            <div className="aspect-square bg-gray-100 bg-gradient-to-b from-gray-100 to-gray-200 flex items-center justify-center">
-                <span className="text-4xl">img</span>
-            </div>
+            <Link to={`/product/${id}`}>
+                <div className="aspect-square bg-gray-100 bg-gradient-to-b from-gray-100 to-gray-200 flex items-center justify-center cursor-pointer hover:opacity-90 transition">
+                    <span className="text-4xl">img</span>
+                </div>
+            </Link>
             {/* Contenido */}
             <div className="p-4 flex flex-col h-40">
                 <h3 className="font-semibold text-gray-900 group-hover:text-brand-yellow 
