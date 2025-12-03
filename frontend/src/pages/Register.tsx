@@ -81,7 +81,7 @@ export default function Register() {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Branding & Benefits */}
-      <div className="hidden lg:flex lg:w-1/3 p-12 flex-col gap-10">
+      <div className="hidden lg:flex lg:w-1/3 p-20  flex-col gap-10">
         <div className="relative z-10">
           <div className="flex items-center space-x-2 mb-8">
             <div className="w-10 h-10 bg-brand-yellow border-2 border-brand-yellow flex items-center justify-center">

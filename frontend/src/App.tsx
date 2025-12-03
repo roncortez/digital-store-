@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Marketplace from './pages/Marketplace';
+import Cart from './pages/Cart';
 import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="marketplace" element={<Marketplace />} />
+          <Route path="cart" element={<Cart />} />
         </Route>
       </Routes>
     </AuthProvider>
