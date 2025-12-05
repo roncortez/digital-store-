@@ -33,12 +33,12 @@ export default function MainLayout() {
                     Inicio
                   </Link>
                   <Link to="/marketplace" className="text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow">
-                    Marketplace
+                    Productos
                   </Link>
                   <Link to="/dashboard" className="text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow">
                     Dashboard
                   </Link>
-                  <Link to="/cart" className="text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow">
+                  <Link to="/checkout" className="text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow">
                     Carrito
                   </Link>
                 </div>
@@ -67,7 +67,7 @@ export default function MainLayout() {
                       to="/login"
                       className="text-white hover:text-brand-yellow font-medium px-4 py-2 transition-colors"
                     >
-                      Iniciar Sesión
+                      Iniciar sesión
                     </Link>
                     <Link
                       to="/register"

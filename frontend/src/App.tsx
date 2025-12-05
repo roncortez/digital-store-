@@ -10,26 +10,30 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Marketplace from './pages/Marketplace';
 import Product from './pages/Product';
-import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
 import { AuthProvider } from './contexts/AuthContext';
+import CartProvider from './contexts/CartContext';
 
 function App() {
   return (
-    <AuthProvider>
-      {/* Define el conjunto de rutas de la aplicación */}
-      {/* Se muestra MainLayout con el contenido de cada página */}
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Home />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="marketplace" element={<Marketplace />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="product/:id" element={<Product />} />
-        </Route>
-      </Routes>
-    </AuthProvider>
+    <CartProvider>
+      <AuthProvider>
+        {/* Define el conjunto de rutas de la aplicación */}
+        {/* Se muestra MainLayout con el contenido de cada página */}
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="marketplace" element={<Marketplace />} />
+            <Route path="checkout" element={<Checkout />} />
+            <Route path="product/:id" element={<Product />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </CartProvider>
+
   );
 }
 

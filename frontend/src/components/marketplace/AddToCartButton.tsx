@@ -1,12 +1,17 @@
-export default function AddToCartButton() {
+interface AddToCartButtonProps {
+    onClick: () => void;
+}
+
+export default function AddToCartButton({ onClick }: AddToCartButtonProps) {
     return (
         <button
-            className="group flex items-center gap-2 bg-brand-yellow text-brand-dark 
-            font-bold text-sm
+            onClick={onClick}
+            className="group flex items-center gap-1.5 bg-brand-yellow text-brand-dark 
+            font-bold text-xs
             border border-brand-yellow 
             rounded-lg
             transition-all duration-200
-            px-4 py-2 shadow-sm"
+            px-3 py-1.5 shadow-sm whitespace-nowrap"
             aria-label="Agregar al carrito"
         >
             <svg
@@ -15,7 +20,7 @@ export default function AddToCartButton() {
                 viewBox="0 0 24 24"
                 strokeWidth={2.5}
                 stroke="currentColor"
-                className="w-4 h-4 transition-transform group-hover:rotate-90"
+                className="w-3.5 h-3.5 transition-transform group-hover:rotate-90"
             >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>

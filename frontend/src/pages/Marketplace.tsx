@@ -17,6 +17,7 @@ export default function Marketplace() {
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<number[]>([]);
   const [selectedConditions, setSelectedConditions] = useState<number[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
 
   const handleClearFilters = () => {
@@ -54,18 +55,45 @@ export default function Marketplace() {
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto p-6">
         <div className="flex gap-6">
-          {/* Sidebar de filtros - Izquierda */}
-          <aside className="w-72 bg-white rounded-lg shadow-lg h-fit sticky top-6 overflow-hidden">
+          {/* Overlay para móvil */}
+          {isFilterOpen && (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+              onClick={() => setIsFilterOpen(false)}
+            />
+          )}
+
+          {/* Sidebar de filtros - Responsive Drawer */}
+          <aside className={`
+            fixed lg:sticky lg:top-6
+            top-0 left-0 h-full lg:h-fit
+            w-72 bg-white rounded-none lg:rounded-lg shadow-lg 
+            z-50 lg:z-0
+            transform transition-transform duration-300 ease-in-out
+            ${isFilterOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+            overflow-hidden
+          `}>
             {/* Header */}
             <div className="px-6 py-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
               <div className="flex justify-between items-center">
                 <h2 className="font-bold text-xl text-gray-800">Filtros</h2>
-                <button
-                  className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200"
-                  onClick={handleClearFilters}
-                >
-                  Limpiar todo
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline transition-all duration-200"
+                    onClick={handleClearFilters}
+                  >
+                    Limpiar todo
+                  </button>
+                  {/* Botón cerrar solo en móvil */}
+                  <button
+                    className="lg:hidden text-gray-600 hover:text-gray-800"
+                    onClick={() => setIsFilterOpen(false)}
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -91,6 +119,19 @@ export default function Marketplace() {
 
           {/* Contenido principal - Derecha */}
           <main className="flex-1">
+            {/* Botón de filtros para móvil */}
+            <div className="mb-4 lg:hidden">
+              <button
+                onClick={() => setIsFilterOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                </svg>
+                <span className="font-medium">Filtros</span>
+              </button>
+            </div>
+
             {/* Búsqueda alineada a la derecha */}
             <div className="mb-6 flex justify-end">
               <div className="w-full">
@@ -103,7 +144,7 @@ export default function Marketplace() {
             </div>
 
             {/* Grid de productos */}
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7">
               {products.map(product => (
                 <ProductCard
                   key={product.id}
