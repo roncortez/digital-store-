@@ -1,16 +1,198 @@
 import { useCart } from "../contexts/CartContext";
+import QuantitySelector from "../components/marketplace/QuantitySelector";
+import { useAuth } from "../contexts/AuthContext";
+import { useState, useEffect } from "react";
+import { HiPencil } from "react-icons/hi2";
+import { HiSave } from "react-icons/hi";
+import { IoCashOutline } from "react-icons/io5";
+
 
 export default function Checkout() {
-    const { clearCart, cart } = useCart();
+    const { clearCart, cart, addToCart, decrementQuantity } = useCart();
+    const { currentUser } = useAuth();
 
+    // ==================== Estados del Formulario ====================
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [id, setId] = useState("");
+    const [idType, setIdType] = useState<'cedula' | 'pasaporte'>('cedula');
+    const [companyName, setCompanyName] = useState("");
+    const [ruc, setRuc] = useState("");
+    const [companyAddress, setCompanyAddress] = useState("");
+    const [couponCode, setCouponCode] = useState("");
+
+
+    // ==================== Estados de UI ====================
+    const [requiereFactura, setRequiereFactura] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [deliveryMethod, setDeliveryMethod] = useState<'pickup' | 'delivery' | ''>('');
+    const [paymentMethod, setPaymentMethod] = useState<'transferencia' | 'tarjeta' | ''>('');
+    const [envio, setEnvio] = useState(4.5);
+    const [couponStatus, setCouponStatus] = useState<'idle' | 'valid' | 'invalid'>('idle');
+
+    // ==================== Estados de Error ====================
+    const [nameError, setNameError] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [phoneError, setPhoneError] = useState("");
+    const [idError, setIdError] = useState("");
+    const [companyNameError, setCompanyNameError] = useState("");
+    const [rucError, setRucError] = useState("");
+    const [companyAddressError, setCompanyAddressError] = useState("");
+    const [couponCodeError, setCouponCodeError] = useState("");
+
+    // ==================== Valores Calculados ====================
     const subtotal = cart.reduce((acc, item) => { return acc + (item.price * item.quantity) }, 0);
-    const descuento = subtotal * 0.1;
-    const total = subtotal - descuento;
+    const costoEnvio = deliveryMethod === 'delivery' ? (subtotal > 100 ? 0 : envio) : 0;
+    const descuento = 0;
+    const total = subtotal - descuento + costoEnvio;
 
+    // ==================== Efectos ====================
+    useEffect(() => {
+        setEmail(currentUser?.email ?? "");
+    }, [currentUser?.email]);
+
+    // ==================== Funciones de Utilidad ====================
     const formatNumber = (value: any) => {
         const num = Number(value);
         return num.toFixed(2);
     };
+
+    // ==================== Funciones de Validación ====================
+    const validateEcuadorianID = (cedula: string): boolean => {
+        if (cedula.length !== 10) return false;
+        if (!/^\d+$/.test(cedula)) return false;
+
+        const provincia = parseInt(cedula.substring(0, 2));
+        if (provincia < 1 || provincia > 24) return false;
+
+        const tercerDigito = parseInt(cedula.charAt(2));
+        if (tercerDigito > 5) return false;
+
+        const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        let suma = 0;
+
+        for (let i = 0; i < 9; i++) {
+            let valor = parseInt(cedula.charAt(i)) * coeficientes[i];
+            if (valor >= 10) valor -= 9;
+            suma += valor;
+        }
+
+        const digitoVerificador = suma % 10 === 0 ? 0 : 10 - (suma % 10);
+        const ultimoDigito = parseInt(cedula.charAt(9));
+
+        return digitoVerificador === ultimoDigito;
+    };
+
+    // ==================== Handlers de Cambio ====================
+    const handleNameChange = (value: string) => {
+        let formattedValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ -]/g, '');
+        formattedValue = formattedValue.trim();
+        setName(formattedValue);
+
+        if (formattedValue.length === 0) {
+            setNameError("El nombre es obligatorio");
+        } else {
+            setNameError("");
+        }
+    };
+
+    const handleEmailChange = (value: string) => {
+        setEmail(value);
+
+        if (value.length === 0) {
+            setEmailError("El correo es obligatorio");
+        } else if (value.length < 5 || !value.includes("@")) {
+            setEmailError("El correo debe ser válido");
+        } else {
+            setEmailError("");
+        }
+    };
+
+    const handlePhoneChange = (value: string) => {
+        let formattedValue = value.replace(/[^0-9]/g, '');
+        if (!formattedValue.startsWith("09")) {
+            formattedValue = "09" + formattedValue.replace(/^0?9?/, "");
+        }
+        setPhone(formattedValue);
+        setPhoneError(formattedValue.length < 10 ? "El número debe tener al menos 10 dígitos" : "");
+    };
+
+    const handleIdChange = (value: string) => {
+        if (idType === 'cedula') {
+            let formattedValue = value.replace(/[^0-9]/g, '');
+            setId(formattedValue);
+
+            if (formattedValue.length === 0) {
+                setIdError("La cédula es obligatoria");
+            } else if (formattedValue.length < 10) {
+                setIdError("La cédula debe tener 10 dígitos");
+            } else if (!validateEcuadorianID(formattedValue)) {
+                setIdError("Cédula inválida");
+            } else {
+                setIdError("");
+            }
+        } else {
+            let formattedValue = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+            setId(formattedValue);
+
+            if (formattedValue.length === 0) {
+                setIdError("El pasaporte es obligatorio");
+            } else if (formattedValue.length < 6) {
+                setIdError("El pasaporte debe tener al menos 6 caracteres");
+            } else {
+                setIdError("");
+            }
+        }
+    };
+
+    const handleCompanyNameChange = (value: string) => {
+        setCompanyName(value);
+
+        if (value.length === 0) {
+            setCompanyNameError("La razón social es obligatoria");
+        } else {
+            setCompanyNameError('');
+        }
+    }
+
+    const handleRucChange = (value: string) => {
+        let formattedValue = value.replace(/[^0-9]/g, '');
+        setRuc(formattedValue);
+
+        if (formattedValue.length === 0) {
+            setRucError('El R.U.C es obligatorio');
+        } else if (formattedValue.length < 13) {
+            setRucError('El R.U.C debe tener 13 dígitos');
+        } else if (!validateEcuadorianID(formattedValue.slice(0, 10))) {
+            setRucError('R.U.C inválido');
+        } else if (formattedValue.slice(-3) !== '001') {
+            setRucError('R.U.C inválido');
+        } else {
+            setRucError('');
+        }
+    };
+
+
+    const handleCompanyAddressChange = (value: string) => {
+        setCompanyAddress(value);
+
+        if (value.length === 0) {
+            setCompanyAddressError("La dirección es obligatoria");
+        } else {
+            setCompanyAddressError("");
+        }
+    };
+
+    const handleCouponCodeChange = (value: string) => {
+        let formattedValue = value.toUpperCase().replace(/[^A-Z0-9-]/g, "");
+        setCouponCode(formattedValue);
+    };
+
+    const handleApplyCoupon = () => {
+        console.log(couponCode);
+        setCouponStatus('valid');
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 py-8">
@@ -47,9 +229,12 @@ export default function Checkout() {
                                                 <div className="font-medium text-gray-900">{item.name}</div>
                                                 <div className="text-center text-gray-600">${formatNumber(item.price)}</div>
                                                 <div className="text-center">
-                                                    <span className="inline-flex items-center justify-center bg-gray-100 text-gray-800 font-semibold px-3 py-1 rounded-full text-sm">
-                                                        {item.quantity}
-                                                    </span>
+                                                    <QuantitySelector
+                                                        className="justify-center"
+                                                        quantity={item.quantity}
+                                                        onIncrement={() => addToCart({ id: item.id, name: item.name, price: item.price })}
+                                                        onDecrement={() => decrementQuantity(item.id)}
+                                                    />
                                                 </div>
                                                 <div className="text-right font-semibold text-gray-900">
                                                     ${formatNumber(item.price * item.quantity)}
@@ -65,41 +250,343 @@ export default function Checkout() {
                                 )}
                             </div>
                         </div>
-
-                        {/* Coupon Section */}
+                        {/* Coupon Section - Moved to Summary Sidebar */}
                         {cart && cart.length > 0 &&
-                            <div className="bg-white rounded-lg shadow-md p-6">
-                                <h3 className="font-semibold text-lg text-gray-900 mb-4">¿Tienes un cupón?</h3>
-                                <div className="flex gap-3">
-                                    <input
-                                        className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
-                                        type="text"
-                                        placeholder="Ingresa tu cupón"
-                                    />
-                                    <button className="bg-brand-yellow text-brand-dark font-bold px-6 py-2 rounded-lg hover:bg-yellow-500 transition-colors whitespace-nowrap">
-                                        Aplicar
-                                    </button>
+                            <>
+                                {/* Datos de entrega */}
+                                <div className="bg-white rounded-lg shadow-md p-6 flex flex-col gap-6">
+                                    <div className="flex items-center gap-2 justify-between">
+                                        <h2 className="text-xl font-bold text-gray-900">Datos de entrega</h2>
+                                        <span className="bg-brand-yellow text-brand-dark font-bold px-3 py-1 rounded-full">
+                                            1
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col gap-6">
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="text-gray-700 font-semibold">Revisa tus datos</h3>
+                                                {!isEditing && (
+                                                    <button onClick={() => setIsEditing(!isEditing)}
+                                                        className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                                                        <HiPencil className="w-5 h-5" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Nombre
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                        placeholder="Ronny Cortez"
+                                                        value={name}
+                                                        onChange={(e) => handleNameChange(e.target.value)}
+                                                        disabled={!isEditing}
+                                                    />
+                                                    <span className="text-danger text-xs">{nameError}</span>
+                                                </div>
+                                                <div>
+                                                    <div className="flex items-center justify-between mb-1">
+                                                        <label className="block text-sm font-medium text-gray-700">
+                                                            Identificación
+                                                        </label>
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => { setIdType('cedula'); setId(''); setIdError(''); }}
+                                                                className={`px-3 py-0.5 rounded text-xs font-medium transition-colors ${idType === 'cedula'
+                                                                    ? 'bg-brand-yellow text-brand-dark'
+                                                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                                                    }`}
+                                                            >
+                                                                Cédula
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => { setIdType('pasaporte'); setId(''); setIdError(''); }}
+                                                                className={`px-3 py-0.5 rounded text-xs font-medium transition-colors ${idType === 'pasaporte'
+                                                                    ? 'bg-brand-yellow text-brand-dark'
+                                                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                                                    }`}
+                                                            >
+                                                                Pasaporte
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <input
+                                                        type="text"
+                                                        value={id}
+                                                        maxLength={idType === 'cedula' ? 10 : 20}
+                                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                        placeholder={idType === 'cedula' ? '1712345678' : 'AB123456'}
+                                                        onChange={(e) => handleIdChange(e.target.value)}
+                                                        disabled={!isEditing}
+
+                                                    />
+                                                    <span className="text-xs text-danger">{idError}</span>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Teléfono
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                        placeholder="09XXXXXXXX"
+                                                        maxLength={10}
+                                                        value={phone}
+                                                        onChange={(e) => handlePhoneChange(e.target.value)}
+                                                        disabled={!isEditing}
+                                                    />
+                                                    <span className="text-xs text-danger">{phoneError}</span>
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Email
+                                                    </label>
+                                                    <input
+                                                        type="email"
+                                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                        placeholder="email"
+                                                        value={email}
+                                                        onChange={(e) => handleEmailChange(e.target.value)}
+                                                        disabled={!isEditing}
+                                                    />
+                                                    <span className="text-xs text-danger">{emailError}</span>
+                                                </div>
+                                            </div>
+                                            {isEditing && (
+                                                <div className="flex justify-end gap-3">
+                                                    <button
+                                                        onClick={() => setIsEditing(false)}
+                                                        className=" text-sm flex items-center gap-2 px-4 py-2 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                                                    >
+                                                        Cancelar
+                                                    </button>
+                                                    <button
+                                                        onClick={() => setIsEditing(false)}
+                                                        className=" text-sm flex items-center gap-2 px-4 py-2 rounded-lg font-medium bg-brand-yellow text-brand-dark hover:bg-yellow-500 transition-colors shadow-sm"
+                                                    >
+                                                        <HiSave className="w-4 h-4" />
+                                                        Guardar
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Datos de facturación */}
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={requiereFactura}
+                                                    onChange={(e) => setRequiereFactura(e.target.checked)}
+                                                    className="w-4 h-4 text-brand-yellow focus:ring-brand-yellow border-gray-300 rounded"
+                                                />
+                                                <label htmlFor="requiereFactura" className="font-medium text-gray-700">
+                                                    ¿Deseas factura?
+                                                </label>
+                                            </div>
+                                            {requiereFactura && (
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                            Razón social
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                            placeholder="Empresa S.A."
+                                                            value={companyName}
+                                                            onChange={(e) => handleCompanyNameChange(e.target.value)}
+                                                        />
+                                                        <span className="text-xs text-danger">{companyNameError}</span>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                            R.U.C
+                                                        </label>
+                                                        <input
+                                                            maxLength={13}
+                                                            type="text"
+                                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                            placeholder="17123456789001"
+                                                            value={ruc}
+                                                            onChange={(e) => handleRucChange(e.target.value)}
+                                                        />
+                                                        <span className="text-xs text-danger">{rucError}</span>
+                                                    </div>
+
+                                                    <div className="md:col-span-2">
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                            Dirección
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                            placeholder="Av. 10 de Agosto N23-529 y Mercadillo"
+                                                            value={companyAddress}
+                                                            onChange={(e) => handleCompanyAddressChange(e.target.value)}
+                                                        />
+                                                        <span className="text-xs text-danger">{companyAddressError}</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                    </div>
+
+                                    {/* Medio de entrega */}
+                                    <div className="flex flex-col gap-4">
+                                        <h3 className="text-gray-700 font-semibold">Medio de entrega</h3>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={() => setDeliveryMethod('pickup')}
+                                                className={`font-bold px-6 py-3 rounded-lg transition-colors shadow-sm ${deliveryMethod === 'pickup'
+                                                    ? 'bg-brand-yellow text-brand-dark'
+                                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                                    }`}
+                                            >
+                                                Coordinar entrega
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                onClick={() => setDeliveryMethod('delivery')}
+                                                className={`font-bold px-6 py-3 rounded-lg transition-colors shadow-sm ${deliveryMethod === 'delivery'
+                                                    ? 'bg-brand-yellow text-brand-dark'
+                                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                                    }`}
+                                            >
+                                                Envío
+                                            </button>
+                                        </div>
+
+                                        {/* Campos adicionales para envío a domicilio */}
+
+                                        {deliveryMethod === 'pickup' && (
+                                            <p className="text-sm text-gray-600">
+                                                Al finalizar la compra, uno de nuestros asesores
+                                                se contactará contigo para coordinar la entrega.
+                                            </p>
+                                        )}
+                                        {deliveryMethod === 'delivery' && (
+                                            <div className="flex flex-col gap-4 pt-2">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        Dirección
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                        placeholder="Calle, número, depto/piso"
+                                                    />
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                            Ciudad
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                            placeholder="Quito"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                            Código postal
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                            placeholder="15001"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
                                 </div>
-                            </div>
+
+                            </>
                         }
                     </div>
 
                     {/* Sidebar - Order Summary */}
                     {cart && cart.length > 0 &&
                         <div className="lg:col-span-1">
-                            <div className="bg-white rounded-lg shadow-md p-6 sticky top-6">
-                                <h2 className="text-xl font-bold text-gray-900 mb-6">Resumen del pedido</h2>
+                            <div className="bg-white rounded-lg shadow-md p-6 sticky top-6 flex flex-col gap-6">
+                                <div className="flex items-center gap-2 justify-between">
+                                    <h2 className="text-xl font-bold text-gray-900">Resumen</h2>
+                                    <span className="bg-brand-yellow text-brand-dark font-bold px-3 py-1 rounded-full hover:bg-yellow-500 transition-colors whitespace-nowrap">
+                                        2
+                                    </span>
+                                </div>
+
+                                {/* Coupon Input */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        ¿Tienes un cupón de descuento?
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                            type="text"
+                                            maxLength={12}
+                                            disabled={couponStatus === 'valid'}
+                                            placeholder="Código de cupón"
+                                            value={couponCode}
+                                            onChange={(e) => handleCouponCodeChange(e.target.value)}
+                                        />
+
+                                        <button
+                                            onClick={handleApplyCoupon}
+                                            disabled={couponStatus === 'valid'}
+                                            className={`bg-brand-yellow text-brand-dark font-bold px-4 py-2 
+                                            rounded-lg hover:bg-yellow-500 transition-colors text-sm whitespace-nowrap
+                                            ${couponStatus === 'valid' && 'opacity-50 cursor-not-allowed'}`}>
+                                            {couponStatus === 'valid' ? 'Aplicado' : 'Aplicar'}
+                                        </button>
+                                    </div>
+                                </div>
 
                                 {/* Price Breakdown */}
-                                <div className="space-y-4 mb-6">
+                                <div className="space-y-4">
                                     <div className="flex justify-between items-center">
                                         <span className="text-gray-600">Subtotal</span>
                                         <span className="font-semibold text-gray-900">${formatNumber(subtotal)}</span>
                                     </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-gray-600">Descuento</span>
-                                        <span className="font-semibold text-green-600">-${formatNumber(descuento)}</span>
-                                    </div>
+                                    {deliveryMethod === 'delivery' && (
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-600">Envío</span>
+                                            <span className="font-semibold text-gray-900">
+                                                {subtotal > 100 ? (
+                                                    <span className="text-green-600">GRATIS</span>
+                                                ) : (
+                                                    `$${formatNumber(envio)}`
+                                                )}
+                                            </span>
+                                        </div>
+                                    )}
+                                    {couponStatus === 'valid' && (
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-600">Cupón</span>
+                                            <span className="font-semibold text-green-600">-${formatNumber(0)}</span>
+                                        </div>
+                                    )}
+                                    {descuento > 0 && (
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-gray-600">Descuento</span>
+                                            <span className="font-semibold text-green-600">-${formatNumber(descuento)}</span>
+                                        </div>
+                                    )}
                                     <div className="border-t border-gray-200 pt-4">
                                         <div className="flex justify-between items-center">
                                             <span className="text-lg font-bold text-gray-900">Total</span>
@@ -109,28 +596,39 @@ export default function Checkout() {
                                 </div>
 
                                 {/* Rewards Points */}
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                                     <div className="flex items-center gap-2">
                                         <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
-                                        <p className="text-sm text-blue-800 font-medium">
-                                            Con esta compra acumulas <span className="font-bold">{Math.floor(total * 10)}</span> puntos
+                                        <p className="text-xs text-blue-800 font-medium">
+                                            Con esta compra acumulas <span className="text-sm font-bold">{Math.floor(total * 10)}</span> puntos
                                         </p>
                                     </div>
                                 </div>
 
                                 {/* Payment Method */}
-                                <div className="mb-6">
+                                <div>
                                     <h3 className="font-semibold text-gray-900 mb-3">Forma de pago</h3>
-                                    <div className="border border-gray-300 rounded-lg p-4">
-                                        <div className="flex items-center gap-3">
-                                            <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                            </svg>
-                                            <div>
-                                                <p className="font-medium text-gray-900">Tarjeta de crédito/débito</p>
-                                                <p className="text-sm text-gray-500">Pago seguro</p>
+                                    <div className="space-y-4">
+                                        <div className={`border border-gray-300 rounded-lg p-4 font-bold px-6 py-3 rounded-lg transition-colors shadow-sm ${paymentMethod === 'tarjeta' && 'bg-brand-yellow text-brand-dark'}`}>
+                                            <div className="flex items-center gap-3">
+                                                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                                </svg>
+                                                <div>
+                                                    <button onClick={() => setPaymentMethod('tarjeta')}>
+                                                        Tarjeta de crédito/débito
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className={`border border-gray-300 rounded-lg p-4 font-bold px-6 py-3 rounded-lg transition-colors shadow-sm ${paymentMethod === 'transferencia' && 'bg-brand-yellow text-brand-dark'}`}>
+                                            <div className="flex items-center gap-3">
+                                                <IoCashOutline className="w-6 h-6 text-gray-600" />
+                                                <div>
+                                                    <button onClick={() => setPaymentMethod('transferencia')}>Transferencia bancaria</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -139,14 +637,14 @@ export default function Checkout() {
                                 {/* Action Buttons */}
                                 <div className="space-y-3">
                                     <button
-                                        className="w-full bg-brand-yellow text-brand-dark font-bold py-3 rounded-lg hover:bg-yellow-500 transition-colors shadow-md"
+                                        className="w-full bg-success text-white font-bold py-3 rounded-lg hover:bg-green-600 transition-colors shadow-md"
                                         disabled={cart.length === 0}
                                     >
                                         Proceder al pago
                                     </button>
                                     <button
                                         onClick={clearCart}
-                                        className="w-full bg-white text-red-600 font-medium py-2 rounded-lg border border-red-300 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full rounded-lg font-bold border py-3 border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
                                         disabled={cart.length === 0}
                                     >
                                         Vaciar carrito
@@ -157,6 +655,6 @@ export default function Checkout() {
                     }
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

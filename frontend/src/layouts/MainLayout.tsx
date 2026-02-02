@@ -1,9 +1,14 @@
 import { Outlet, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import GlowBackground from '../components/GlowBackground';
+import { useCart } from '../contexts/CartContext';
+import { FaShoppingCart } from 'react-icons/fa';
 
 export default function MainLayout() {
   const { currentUser, logout } = useAuth();
+
+  const { cart } = useCart();
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   const handleLogout = async () => {
     await logout();
@@ -32,15 +37,27 @@ export default function MainLayout() {
                   <Link to="/" className="text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow">
                     Inicio
                   </Link>
+                  <Link to="/about" className="text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow">
+                    Sobre nosotros
+                  </Link>
                   <Link to="/marketplace" className="text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow">
                     Productos
                   </Link>
                   <Link to="/dashboard" className="text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow">
                     Dashboard
                   </Link>
-                  <Link to="/checkout" className="text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow">
-                    Carrito
+                  <Link
+                    to="/checkout"
+                    className="relative text-gray-300 hover:text-brand-yellow px-3 py-2 text-sm font-medium transition-colors border-b-2 border-transparent hover:border-brand-yellow"
+                  >
+                    <FaShoppingCart className="w-6 h-6" />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-yellow px-1 text-xs font-semibold leading-none text-brand-dark">
+                        {cartCount}
+                      </span>
+                    )}
                   </Link>
+
                 </div>
               )}
 

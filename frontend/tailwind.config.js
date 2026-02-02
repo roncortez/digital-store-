@@ -10,13 +10,19 @@ export default {
         // Color principal - Amarillo dorado
         primary: '#E6B31E',
         
-        // Paleta de marca
+        // Paleta de marca (MANTENER TODO)
         brand: {
           yellow: '#ffaa17', // User provided yellow/orange
           dark: '#222429',   // User provided dark gray
           light: '#FCFAF1',
           gray: '#CACACA',
         },
+        
+        // Colores adicionales semánticos (NUEVOS)
+        accent: '#475569',      // Gris oscuro para enlaces/iconos
+        success: '#10B981',     // Verde para éxito
+        danger: '#EF4444',      // Rojo para errores/eliminar
+        warning: '#F59E0B',     // Naranja para advertencias
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

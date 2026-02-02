@@ -11,6 +11,7 @@ import Register from './pages/Register';
 import Marketplace from './pages/Marketplace';
 import Product from './pages/Product';
 import Checkout from './pages/Checkout';
+import About from './pages/About';
 import { AuthProvider } from './contexts/AuthContext';
 import CartProvider from './contexts/CartContext';
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="about" element={<About />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="marketplace" element={<Marketplace />} />
