@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import Checkbox from "../ui/Checkbox";
+import { api } from "../../api/api";
+import { FaChevronDown } from "react-icons/fa";
 
 interface CategoryFilterProps {
     selectedCategories: number[];
@@ -25,14 +27,12 @@ export default function CategoryFilter({ selectedCategories, onCategoryChange }:
     // 3. Funciones 
     const fetchCategories = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/categories');
-            const data = await response.json();
-            setCategories(data.categories);
+            const response = await api.get('/categories');
+            setCategories(response.data.categories);
         } catch (error) {
             console.error('Error fetching categories:', error);
         }
-
-    }
+    };
 
     const handleOnChange = (id: number) => {
         if (selectedCategories.includes(id)) {
@@ -45,25 +45,26 @@ export default function CategoryFilter({ selectedCategories, onCategoryChange }:
     };
 
     return (
-        <div>
+        <div className="py-4">
             <button
                 onClick={() => setOpen(!open)}
                 aria-expanded={open}
-                className="flex justify-between w-full">
-                <span className="font-bold">Categorías</span>
-                <span
-                    className={`transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"
+                className="flex justify-between items-center w-full group transition-colors"
+            >
+                <span className="font-bold text-gray-800 group-hover:text-brand-dark transition-colors">Categorías</span>
+                <FaChevronDown
+                    className={`text-gray-400 group-hover:text-brand-dark transition-all duration-300 ${open ? "rotate-180" : "rotate-0"
                         }`}
-                >
-                    ▼
-                </span>
+                />
             </button>
-            {open && (
-                <ul className="mt-3">
+            <div className={`grid transition-all duration-300 ease-in-out ${open ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0 overflow-hidden"}`}>
+                <ul className="min-h-0 space-y-3">
                     {categories && categories.map(category => (
                         <li key={category.id}>
-                            <div className="flex justify-between items-center">
-                                <span className="text-sm">{category.name}</span>
+                            <div className="flex justify-between items-center group cursor-pointer" onClick={() => handleOnChange(category.id)}>
+                                <span className={`text-sm transition-colors ${selectedCategories.includes(category.id) ? 'text-brand-dark font-semibold' : 'text-gray-600 group-hover:text-gray-900'}`}>
+                                    {category.name}
+                                </span>
                                 <Checkbox
                                     checked={selectedCategories.includes(category.id)}
                                     onChange={() => handleOnChange(category.id)}
@@ -72,8 +73,7 @@ export default function CategoryFilter({ selectedCategories, onCategoryChange }:
                         </li>
                     ))}
                 </ul>
-            )}
-
+            </div>
         </div>
     )
 }

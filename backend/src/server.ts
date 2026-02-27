@@ -8,6 +8,9 @@ import categoriesRouter from './routes/categories';
 import brandsRouter from './routes/brands';
 import conditionsRouter from './routes/conditions';
 import productsRouter from './routes/products';
+import usersRouter from './routes/users';
+import orderRouter from './routes/order';
+import payphoneRouter from './routes/payphone';
 
 // Load environment variables
 dotenv.config();
@@ -28,7 +31,8 @@ app.get('/', (req, res) => {
       categories: '/api/categories',
       brands: '/api/brands',
       conditions: '/api/conditions',
-      products: '/api/products'
+      products: '/api/products',
+      payphone: '/api/payphone'
     }
   });
 });
@@ -38,6 +42,12 @@ app.use('/api/categories', categoriesRouter);
 app.use('/api/brands', brandsRouter);
 app.use('/api/conditions', conditionsRouter);
 app.use('/api/products', productsRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/orders', orderRouter);
+app.use('/api/payphone', payphoneRouter);
+
+// Payphone response endpoint (not under /api)
+app.use('/', payphoneRouter);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

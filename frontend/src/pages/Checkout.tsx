@@ -3,24 +3,45 @@ import QuantitySelector from "../components/marketplace/QuantitySelector";
 import { useAuth } from "../contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { HiPencil } from "react-icons/hi2";
+import { BsFillEraserFill } from "react-icons/bs";
 import { HiSave } from "react-icons/hi";
 import { IoCashOutline } from "react-icons/io5";
+import { HiOutlineCreditCard } from "react-icons/hi2";
+import { BsBank } from "react-icons/bs";
+import { IoMdClose } from "react-icons/io";
+import PayButton from "../components/ui/PayButton";
+import { createOrder } from '../services/orderService';
+import { FaWhatsapp } from "react-icons/fa";
+import { api } from "../api/api";
+import { Link } from "react-router-dom";
 
+interface User {
+    firebase_uid: string;
+    first_name: string;
+    last_name: string;
+    doc_id: string | null;
+    email: string;
+    phone: string | null;
+}
 
 export default function Checkout() {
     const { clearCart, cart, addToCart, decrementQuantity } = useCart();
     const { currentUser } = useAuth();
+    const [user, setUser] = useState<User | null>(null);
 
     // ==================== Estados del Formulario ====================
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [id, setId] = useState("");
+    const [doc_id, setDocId] = useState("");
     const [idType, setIdType] = useState<'cedula' | 'pasaporte'>('cedula');
     const [companyName, setCompanyName] = useState("");
-    const [ruc, setRuc] = useState("");
+    const [companyRuc, setRuc] = useState("");
     const [companyAddress, setCompanyAddress] = useState("");
+    const [deliveryAddress, setDeliveryAddress] = useState("");
+    const [deliveryCity, setDeliveryCity] = useState("");
     const [couponCode, setCouponCode] = useState("");
+    const [prefixPhone, setPrefixPhone] = useState("+593");
 
 
     // ==================== Estados de UI ====================
@@ -30,6 +51,7 @@ export default function Checkout() {
     const [paymentMethod, setPaymentMethod] = useState<'transferencia' | 'tarjeta' | ''>('');
     const [envio, setEnvio] = useState(4.5);
     const [couponStatus, setCouponStatus] = useState<'idle' | 'valid' | 'invalid'>('idle');
+    const [paymentMethodModal, setPaymentMethodModal] = useState(false);
 
     // ==================== Estados de Error ====================
     const [nameError, setNameError] = useState("");
@@ -37,20 +59,60 @@ export default function Checkout() {
     const [phoneError, setPhoneError] = useState("");
     const [idError, setIdError] = useState("");
     const [companyNameError, setCompanyNameError] = useState("");
-    const [rucError, setRucError] = useState("");
+    const [companyRucError, setCompanyRucError] = useState("");
     const [companyAddressError, setCompanyAddressError] = useState("");
+    const [deliveryAddressError, setDeliveryAddressError] = useState("");
+    const [deliveryCityError, setDeliveryCityError] = useState("");
     const [couponCodeError, setCouponCodeError] = useState("");
 
+    const hasAnyError =
+        nameError !== '' ||
+        emailError !== '' ||
+        phoneError !== '' ||
+        idError !== '' ||
+        (requiereFactura && (companyNameError !== '' || companyRucError !== '' || companyAddressError !== '')) ||
+        (deliveryMethod === 'delivery' && (deliveryAddressError !== '' || deliveryCityError !== ''));
+
+    const isPaymentDisabled = !name || !email || !phone || !doc_id || !deliveryMethod ||
+        (requiereFactura && (!companyName || !companyRuc || !companyAddress)) ||
+        (deliveryMethod === 'delivery' && (!deliveryAddress || !deliveryCity)) ||
+        hasAnyError || cart.length === 0;
     // ==================== Valores Calculados ====================
     const subtotal = cart.reduce((acc, item) => { return acc + (item.price * item.quantity) }, 0);
-    const costoEnvio = deliveryMethod === 'delivery' ? (subtotal > 100 ? 0 : envio) : 0;
-    const descuento = 0;
-    const total = subtotal - descuento + costoEnvio;
+    const shippingCost = deliveryMethod === 'delivery' ? (subtotal > 100 ? 0 : envio) : 0;
+    const discount = 0;
+    const total = subtotal - discount + shippingCost;
 
     // ==================== Efectos ====================
+
+    const getUser = async () => {
+        try {
+            const response = await api.get(`/users/${currentUser?.uid}`);
+            console.log('API Response:', response.data);
+
+            if (response.data.success) {
+                setUser(response.data.user);
+            }
+        } catch (error) {
+            console.error('Error fetching user:', error);
+        }
+    }
+
     useEffect(() => {
-        setEmail(currentUser?.email ?? "");
-    }, [currentUser?.email]);
+        if (currentUser) {
+            getUser();
+        }
+    }, [currentUser]);
+
+    // Inicializar los campos del formulario cuando se carga el usuario
+    useEffect(() => {
+        if (user) {
+            setName(`${user.first_name} ${user.last_name}`);
+            setPhone(user.phone ? user.phone.trim().replace(/^\+\d{1,3}\s?/, '') : '');
+            setDocId(user.doc_id ? user.doc_id : '');
+            setEmail(user.email);
+        }
+    }, [user]);
 
     // ==================== Funciones de Utilidad ====================
     const formatNumber = (value: any) => {
@@ -85,9 +147,17 @@ export default function Checkout() {
     };
 
     // ==================== Handlers de Cambio ====================
+
+    const handleDelete = () => {
+        setName('');
+        setEmail('');
+        setPhone('');
+        setDocId('');
+        setIsEditing(!isEditing);
+    }
+
     const handleNameChange = (value: string) => {
         let formattedValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ -]/g, '');
-        formattedValue = formattedValue.trim();
         setName(formattedValue);
 
         if (formattedValue.length === 0) {
@@ -110,18 +180,25 @@ export default function Checkout() {
     };
 
     const handlePhoneChange = (value: string) => {
-        let formattedValue = value.replace(/[^0-9]/g, '');
-        if (!formattedValue.startsWith("09")) {
-            formattedValue = "09" + formattedValue.replace(/^0?9?/, "");
-        }
+
+        let formattedValue = value.replace(/\D/g, '');
+
         setPhone(formattedValue);
-        setPhoneError(formattedValue.length < 10 ? "El número debe tener al menos 10 dígitos" : "");
+
+        if (formattedValue.length < 9) {
+            setPhoneError("Número de teléfono inválido");
+        } else if (!formattedValue.startsWith('9')) {
+            setPhoneError("El número debe empezar con 9");
+        }
+        else {
+            setPhoneError("");
+        }
     };
 
     const handleIdChange = (value: string) => {
         if (idType === 'cedula') {
             let formattedValue = value.replace(/[^0-9]/g, '');
-            setId(formattedValue);
+            setDocId(formattedValue);
 
             if (formattedValue.length === 0) {
                 setIdError("La cédula es obligatoria");
@@ -134,7 +211,7 @@ export default function Checkout() {
             }
         } else {
             let formattedValue = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-            setId(formattedValue);
+            setDocId(formattedValue);
 
             if (formattedValue.length === 0) {
                 setIdError("El pasaporte es obligatorio");
@@ -161,15 +238,15 @@ export default function Checkout() {
         setRuc(formattedValue);
 
         if (formattedValue.length === 0) {
-            setRucError('El R.U.C es obligatorio');
+            setCompanyRucError('El R.U.C es obligatorio');
         } else if (formattedValue.length < 13) {
-            setRucError('El R.U.C debe tener 13 dígitos');
+            setCompanyRucError('El R.U.C debe tener 13 dígitos');
         } else if (!validateEcuadorianID(formattedValue.slice(0, 10))) {
-            setRucError('R.U.C inválido');
+            setCompanyRucError('R.U.C inválido');
         } else if (formattedValue.slice(-3) !== '001') {
-            setRucError('R.U.C inválido');
+            setCompanyRucError('R.U.C inválido');
         } else {
-            setRucError('');
+            setCompanyRucError('');
         }
     };
 
@@ -184,6 +261,26 @@ export default function Checkout() {
         }
     };
 
+    const handleDeliveryAddressChange = (value: string) => {
+        setDeliveryAddress(value);
+
+        if (value.length === 0) {
+            setDeliveryAddressError("La dirección es obligatoria");
+        } else {
+            setDeliveryAddressError("");
+        }
+    };
+
+    const handleDeliveryCityChange = (value: string) => {
+        setDeliveryCity(value);
+
+        if (value.length === 0) {
+            setDeliveryCityError("La ciudad es obligatoria");
+        } else {
+            setDeliveryCityError("");
+        }
+    };
+
     const handleCouponCodeChange = (value: string) => {
         let formattedValue = value.toUpperCase().replace(/[^A-Z0-9-]/g, "");
         setCouponCode(formattedValue);
@@ -193,6 +290,40 @@ export default function Checkout() {
         console.log(couponCode);
         setCouponStatus('valid');
     }
+
+    const handleClosePaymentMethodModal = () => {
+        setPaymentMethodModal(false);
+        setPaymentMethod('');
+    }
+
+    const handleProceedToPayment = async () => {
+        console.log('Orden creada');
+        const orderData = {
+            user_id: user?.firebase_uid,
+            payment_method: paymentMethod,
+            delivery_method: deliveryMethod,
+            shipping_cost: shippingCost,
+            subtotal: subtotal,
+            discount: discount,
+            total: total,
+            coupon_code: couponCode,
+            billing_info: requiereFactura ? {
+                companyName,
+                companyRuc,
+                companyAddress,
+            } : null,
+            delivery_address: deliveryMethod === 'delivery' ? {
+                address: deliveryAddress,
+                city: deliveryCity,
+            } : null,
+        }
+
+        const response = await createOrder(orderData);
+        console.log(response);
+        setPaymentMethodModal(true);
+    }
+
+
 
     return (
         <div className="min-h-screen bg-gray-50 py-8">
@@ -207,7 +338,6 @@ export default function Checkout() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Content - Cart Items */}
                     <div className="lg:col-span-2 space-y-6">
-
                         {/* Cart Items Table */}
                         <div className="bg-white rounded-lg shadow-md overflow-hidden">
                             {/* Table Header */}
@@ -255,21 +385,27 @@ export default function Checkout() {
                             <>
                                 {/* Datos de entrega */}
                                 <div className="bg-white rounded-lg shadow-md p-6 flex flex-col gap-6">
-                                    <div className="flex items-center gap-2 justify-between">
-                                        <h2 className="text-xl font-bold text-gray-900">Datos de entrega</h2>
-                                        <span className="bg-brand-yellow text-brand-dark font-bold px-3 py-1 rounded-full">
+                                    <div className="flex items-center gap-2">
+                                        <span className="bg-brand-yellow text-brand-dark font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-yellow-500 transition-colors">
                                             1
                                         </span>
+                                        <h2 className="text-xl font-bold text-gray-900">Datos de entrega</h2>
                                     </div>
                                     <div className="flex flex-col gap-6">
                                         <div className="flex flex-col gap-4">
                                             <div className="flex items-center justify-between">
                                                 <h3 className="text-gray-700 font-semibold">Revisa tus datos</h3>
                                                 {!isEditing && (
-                                                    <button onClick={() => setIsEditing(!isEditing)}
-                                                        className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
-                                                        <HiPencil className="w-5 h-5" />
-                                                    </button>
+                                                    <div className="flex items-center gap-2">
+                                                        <button onClick={() => setIsEditing(!isEditing)}
+                                                            className="btn btn-ghost btn-sm">
+                                                            <HiPencil className="w-4 h-4" />
+                                                        </button>
+                                                        <button onClick={handleDelete}
+                                                            className="btn btn-ghost btn-sm">
+                                                            <BsFillEraserFill className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -283,7 +419,9 @@ export default function Checkout() {
                                                         placeholder="Ronny Cortez"
                                                         value={name}
                                                         onChange={(e) => handleNameChange(e.target.value)}
+                                                        onBlur={() => setName(v => v.replace(/\s+/g, ' ').trim())}
                                                         disabled={!isEditing}
+                                                        style={{ textTransform: 'capitalize' }}
                                                     />
                                                     <span className="text-danger text-xs">{nameError}</span>
                                                 </div>
@@ -295,7 +433,7 @@ export default function Checkout() {
                                                         <div className="flex gap-2">
                                                             <button
                                                                 type="button"
-                                                                onClick={() => { setIdType('cedula'); setId(''); setIdError(''); }}
+                                                                onClick={() => { setIdType('cedula'); setDocId(''); setIdError(''); }}
                                                                 className={`px-3 py-0.5 rounded text-xs font-medium transition-colors ${idType === 'cedula'
                                                                     ? 'bg-brand-yellow text-brand-dark'
                                                                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -305,7 +443,7 @@ export default function Checkout() {
                                                             </button>
                                                             <button
                                                                 type="button"
-                                                                onClick={() => { setIdType('pasaporte'); setId(''); setIdError(''); }}
+                                                                onClick={() => { setIdType('pasaporte'); setDocId(''); setIdError(''); }}
                                                                 className={`px-3 py-0.5 rounded text-xs font-medium transition-colors ${idType === 'pasaporte'
                                                                     ? 'bg-brand-yellow text-brand-dark'
                                                                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -317,7 +455,7 @@ export default function Checkout() {
                                                     </div>
                                                     <input
                                                         type="text"
-                                                        value={id}
+                                                        value={doc_id}
                                                         maxLength={idType === 'cedula' ? 10 : 20}
                                                         className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                                                         placeholder={idType === 'cedula' ? '1712345678' : 'AB123456'}
@@ -331,15 +469,23 @@ export default function Checkout() {
                                                     <label className="block text-sm font-medium text-gray-700 mb-1">
                                                         Teléfono
                                                     </label>
-                                                    <input
-                                                        type="text"
-                                                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
-                                                        placeholder="09XXXXXXXX"
-                                                        maxLength={10}
-                                                        value={phone}
-                                                        onChange={(e) => handlePhoneChange(e.target.value)}
-                                                        disabled={!isEditing}
-                                                    />
+                                                    <div className="flex gap-2">
+                                                        <input
+                                                            type="text"
+                                                            value={prefixPhone}
+                                                            disabled={true}
+                                                            className="w-20 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                                                            placeholder="XXXXXXXXX"
+                                                            maxLength={9}
+                                                            value={phone}
+                                                            onChange={(e) => handlePhoneChange(e.target.value)}
+                                                            disabled={!isEditing}
+                                                        />
+                                                    </div>
                                                     <span className="text-xs text-danger">{phoneError}</span>
                                                 </div>
 
@@ -361,14 +507,16 @@ export default function Checkout() {
                                             {isEditing && (
                                                 <div className="flex justify-end gap-3">
                                                     <button
+                                                        disabled={!name || !doc_id || !phone || !email || nameError !== '' || idError !== '' || phoneError !== '' || emailError !== ''}
                                                         onClick={() => setIsEditing(false)}
-                                                        className=" text-sm flex items-center gap-2 px-4 py-2 rounded-lg font-medium border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                                                        className="btn btn-ghost btn-sm"
                                                     >
                                                         Cancelar
                                                     </button>
                                                     <button
+                                                        disabled={!name || !doc_id || !phone || !email || nameError !== '' || idError !== '' || phoneError !== '' || emailError !== ''}
                                                         onClick={() => setIsEditing(false)}
-                                                        className=" text-sm flex items-center gap-2 px-4 py-2 rounded-lg font-medium bg-brand-yellow text-brand-dark hover:bg-yellow-500 transition-colors shadow-sm"
+                                                        className="btn btn-primary btn-sm"
                                                     >
                                                         <HiSave className="w-4 h-4" />
                                                         Guardar
@@ -415,10 +563,10 @@ export default function Checkout() {
                                                             type="text"
                                                             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                                                             placeholder="17123456789001"
-                                                            value={ruc}
+                                                            value={companyRuc}
                                                             onChange={(e) => handleRucChange(e.target.value)}
                                                         />
-                                                        <span className="text-xs text-danger">{rucError}</span>
+                                                        <span className="text-xs text-danger">{companyRucError}</span>
                                                     </div>
 
                                                     <div className="md:col-span-2">
@@ -447,9 +595,9 @@ export default function Checkout() {
                                             <button
                                                 type="button"
                                                 onClick={() => setDeliveryMethod('pickup')}
-                                                className={`font-bold px-6 py-3 rounded-lg transition-colors shadow-sm ${deliveryMethod === 'pickup'
-                                                    ? 'bg-brand-yellow text-brand-dark'
-                                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                                className={`btn w-full ${deliveryMethod === 'pickup'
+                                                    ? 'btn-primary'
+                                                    : 'border-gray-300 text-gray-700 hover:bg-gray-100'
                                                     }`}
                                             >
                                                 Coordinar entrega
@@ -458,9 +606,9 @@ export default function Checkout() {
                                             <button
                                                 type="button"
                                                 onClick={() => setDeliveryMethod('delivery')}
-                                                className={`font-bold px-6 py-3 rounded-lg transition-colors shadow-sm ${deliveryMethod === 'delivery'
-                                                    ? 'bg-brand-yellow text-brand-dark'
-                                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                                className={`btn w-full ${deliveryMethod === 'delivery'
+                                                    ? 'btn-primary'
+                                                    : 'border-gray-300 text-gray-700 hover:bg-gray-100'
                                                     }`}
                                             >
                                                 Envío
@@ -485,6 +633,8 @@ export default function Checkout() {
                                                         type="text"
                                                         className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                                                         placeholder="Calle, número, depto/piso"
+                                                        value={deliveryAddress}
+                                                        onChange={(e) => handleDeliveryAddressChange(e.target.value)}
                                                     />
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-4">
@@ -496,16 +646,8 @@ export default function Checkout() {
                                                             type="text"
                                                             className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
                                                             placeholder="Quito"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                            Código postal
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
-                                                            placeholder="15001"
+                                                            value={deliveryCity}
+                                                            onChange={(e) => handleDeliveryCityChange(e.target.value)}
                                                         />
                                                     </div>
                                                 </div>
@@ -523,11 +665,11 @@ export default function Checkout() {
                     {cart && cart.length > 0 &&
                         <div className="lg:col-span-1">
                             <div className="bg-white rounded-lg shadow-md p-6 sticky top-6 flex flex-col gap-6">
-                                <div className="flex items-center gap-2 justify-between">
-                                    <h2 className="text-xl font-bold text-gray-900">Resumen</h2>
-                                    <span className="bg-brand-yellow text-brand-dark font-bold px-3 py-1 rounded-full hover:bg-yellow-500 transition-colors whitespace-nowrap">
+                                <div className="flex items-center gap-2">
+                                    <span className="bg-brand-yellow text-brand-dark font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-yellow-500 transition-colors">
                                         2
                                     </span>
+                                    <h2 className="text-xl font-bold text-gray-900">Resumen</h2>
                                 </div>
 
                                 {/* Coupon Input */}
@@ -549,10 +691,8 @@ export default function Checkout() {
                                         <button
                                             onClick={handleApplyCoupon}
                                             disabled={couponStatus === 'valid'}
-                                            className={`bg-brand-yellow text-brand-dark font-bold px-4 py-2 
-                                            rounded-lg hover:bg-yellow-500 transition-colors text-sm whitespace-nowrap
-                                            ${couponStatus === 'valid' && 'opacity-50 cursor-not-allowed'}`}>
-                                            {couponStatus === 'valid' ? 'Aplicado' : 'Aplicar'}
+                                            className="btn btn-primary btn-sm">
+                                            {couponStatus === 'valid' ? 'Aplicado ✔' : 'Aplicar'}
                                         </button>
                                     </div>
                                 </div>
@@ -581,10 +721,10 @@ export default function Checkout() {
                                             <span className="font-semibold text-green-600">-${formatNumber(0)}</span>
                                         </div>
                                     )}
-                                    {descuento > 0 && (
+                                    {discount > 0 && (
                                         <div className="flex justify-between items-center">
                                             <span className="text-gray-600">Descuento</span>
-                                            <span className="font-semibold text-green-600">-${formatNumber(descuento)}</span>
+                                            <span className="font-semibold text-green-600">-${formatNumber(discount)}</span>
                                         </div>
                                     )}
                                     <div className="border-t border-gray-200 pt-4">
@@ -609,25 +749,34 @@ export default function Checkout() {
 
                                 {/* Payment Method */}
                                 <div>
-                                    <h3 className="font-semibold text-gray-900 mb-3">Forma de pago</h3>
-                                    <div className="space-y-4">
-                                        <div className={`border border-gray-300 rounded-lg p-4 font-bold px-6 py-3 rounded-lg transition-colors shadow-sm ${paymentMethod === 'tarjeta' && 'bg-brand-yellow text-brand-dark'}`}>
+                                    <h3 className="font-semibold text-gray-900">Forma de pago</h3>
+                                    {isPaymentDisabled && (
+                                        <span className="text-gray-600 text-sm">Completa los datos de entrega para continuar</span>
+                                    )}
+                                    <div className="space-y-4 mt-4">
+                                        <div className={`border border-gray-300 rounded-lg p-4 px-6 py-3 rounded-lg transition-colors shadow-sm has-[button:disabled]:opacity-50 has-[button:disabled]:bg-white ${paymentMethod === 'tarjeta' && 'bg-brand-yellow text-brand-dark'}`}>
                                             <div className="flex items-center gap-3">
-                                                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                                                </svg>
+                                                <HiOutlineCreditCard className="w-6 h-6 text-gray-600" />
                                                 <div>
-                                                    <button onClick={() => setPaymentMethod('tarjeta')}>
+                                                    <button
+                                                        onClick={() => setPaymentMethod('tarjeta')}
+                                                        disabled={isPaymentDisabled}
+                                                    >
                                                         Tarjeta de crédito/débito
                                                     </button>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className={`border border-gray-300 rounded-lg p-4 font-bold px-6 py-3 rounded-lg transition-colors shadow-sm ${paymentMethod === 'transferencia' && 'bg-brand-yellow text-brand-dark'}`}>
+                                        <div className={`border border-gray-300 rounded-lg p-4 px-6 py-3 rounded-lg transition-colors shadow-sm has-[button:disabled]:opacity-50 has-[button:disabled]:bg-white ${paymentMethod === 'transferencia' && 'bg-brand-yellow text-brand-dark'}`}>
                                             <div className="flex items-center gap-3">
                                                 <IoCashOutline className="w-6 h-6 text-gray-600" />
                                                 <div>
-                                                    <button onClick={() => setPaymentMethod('transferencia')}>Transferencia bancaria</button>
+                                                    <button
+                                                        onClick={() => setPaymentMethod('transferencia')}
+                                                        disabled={isPaymentDisabled}
+                                                    >
+                                                        Transferencia bancaria
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -636,15 +785,27 @@ export default function Checkout() {
 
                                 {/* Action Buttons */}
                                 <div className="space-y-3">
-                                    <button
-                                        className="w-full bg-success text-white font-bold py-3 rounded-lg hover:bg-green-600 transition-colors shadow-md"
-                                        disabled={cart.length === 0}
-                                    >
-                                        Proceder al pago
-                                    </button>
+                                    {currentUser ? (
+                                        <button
+                                            className="btn btn-success w-full btn-lg shadow-md hover:shadow-green-600/15"
+                                            disabled={cart.length === 0 || isPaymentDisabled || !paymentMethod || !deliveryMethod}
+                                            onClick={handleProceedToPayment}
+                                        >
+                                            Proceder al pago
+                                        </button>
+                                    ) : (
+                                        <Link
+                                            to="/login"
+                                            className="btn btn-primary w-full btn-lg text-xs shadow-md hover:shadow-green-600/15"
+                                        >
+                                            Inicia sesión para pagar
+                                        </Link>
+                                    )}
+
+
                                     <button
                                         onClick={clearCart}
-                                        className="w-full rounded-lg font-bold border py-3 border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
+                                        className="btn btn-ghost w-full"
                                         disabled={cart.length === 0}
                                     >
                                         Vaciar carrito
@@ -655,6 +816,133 @@ export default function Checkout() {
                     }
                 </div>
             </div>
+            {paymentMethod === 'tarjeta' && paymentMethodModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
+                    <div className="bg-white p-10 rounded-lg shadow-lg max-w-2xl">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="bg-brand-yellow text-brand-dark font-bold px-3 py-1 rounded-full hover:bg-yellow-500 transition-colors whitespace-nowrap">
+                                    3
+                                </span>
+                                <h2 className="text-xl font-bold text-gray-900">Completar el pago</h2>
+                            </div>
+                            <button onClick={handleClosePaymentMethodModal}><IoMdClose className="w-6 h-6 text-gray-600" /></button>
+                        </div>
+                        <PayButton
+                            amount={Math.round(total * 100)} // Total in cents
+                            amountWithTax={Math.round((subtotal / 1.15) * 100)} // Base amount in cents
+                            tax={Math.round((subtotal - (subtotal / 1.15)) * 100)} // Tax (15% IVA) in cents
+                            userEmail={email}
+                            userPhone={prefixPhone + phone}
+                            userDocumentId={doc_id}
+                            clientTransactionId={`MAITECH-${Date.now()}`}
+                            reference={`Compra maitech - ${cart.length} productos`}
+                            disabled={
+                                !name ||
+                                !email ||
+                                !phone ||
+                                !doc_id ||
+                                !deliveryMethod ||
+                                cart.length === 0
+                            }
+                            onSuccess={() => {
+                                alert('¡Pago exitoso! Gracias por tu compra.');
+                                clearCart();
+                            }}
+                            onError={(error) => {
+                                alert(`Error en el pago: ${error}`);
+                            }}
+                        />
+                    </div>
+                </div>
+            )}
+
+            {paymentMethod === 'transferencia' && paymentMethodModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="bg-brand-yellow text-brand-dark font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-yellow-500 transition-colors">
+                                    3
+                                </span>
+                                <h2 className="text-xl font-bold text-gray-900">Completar el pago</h2>
+                            </div>
+                            <button onClick={handleClosePaymentMethodModal}><IoMdClose className="w-6 h-6 text-gray-600" /></button>
+                        </div>
+                        <div className="mt-5 space-y-4">
+                            <p className="text-gray-700 font-medium">Realiza una transferencia de ${total.toFixed(2)} a una de las siguientes cuentas:</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <BsBank className="w-5 h-5 text-blue-600" />
+                                        <h4 className="font-semibold text-gray-900">Banco Pichincha</h4>
+                                    </div>
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">Cuenta:</span>
+                                            <span className="font-medium text-gray-900">2203828035</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">Nombre:</span>
+                                            <span className="font-medium text-gray-900">Maitech</span>
+                                        </div>
+                                        <div className="flex justify-between border-t pt-2 mt-2">
+                                            <span className="text-gray-600">Referencia:</span>
+                                            <span className="font-medium text-gray-900">Compra Maitech</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <BsBank className="w-5 h-5 text-red-600" />
+                                        <h4 className="font-semibold text-gray-900">Banco del Pacífico</h4>
+                                    </div>
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">Cuenta:</span>
+                                            <span className="font-medium text-gray-900">3301234567</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">Nombre:</span>
+                                            <span className="font-medium text-gray-900">Maitech</span>
+                                        </div>
+                                        <div className="flex justify-between border-t pt-2 mt-2">
+                                            <span className="text-gray-600">Referencia:</span>
+                                            <span className="font-medium text-gray-900">Compra Maitech</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <BsBank className="w-5 h-5 text-red-600" />
+                                        <h4 className="font-semibold text-gray-900">Banco Produbanco</h4>
+                                    </div>
+                                    <div className="space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">Cuenta:</span>
+                                            <span className="font-medium text-gray-900">3301234567</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-gray-600">Nombre:</span>
+                                            <span className="font-medium text-gray-900">Maitech</span>
+                                        </div>
+                                        <div className="flex justify-between border-t pt-2 mt-2">
+                                            <span className="text-gray-600">Referencia:</span>
+                                            <span className="font-medium text-gray-900">Compra Maitech</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p>Una vez realizada envía tu comprobante vía Whatsapp o correo electrónico y verificaremos el pago.</p>
+                            <a
+                                className="h-12 w-12 inline-flex items-center justify-center rounded-full bg-green-500 text-white"
+                                href="https://wa.me/593979229318?text=Hola%20tengo%20una%20consulta%20sobre%20mi%20compra">
+                                <FaWhatsapp className="h-6 w-6" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div >
     );
 }

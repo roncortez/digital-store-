@@ -7,6 +7,17 @@
   html,
   body {
     @apply overflow-x-hidden;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .font-display {
+    font-family: 'Sora', sans-serif !important;
   }
 
   html {
@@ -20,12 +31,41 @@
 
 @layer components {
 
-  /* Button Styles */
+  /* ─── Button System ─────────────────────────────────────────── */
+  /* Base: shape, typography, transition — NO color, NO size */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 border-2 rounded-none font-black uppercase tracking-widest text-xs px-6 py-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-yellow disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap;
+    font-family: 'Sora', sans-serif !important;
+  }
+
+  /* Size modifiers */
+  .btn-sm {
+    @apply px-4 py-2 text-[10px];
+  }
+
+  .btn-lg {
+    @apply px-8 py-4 text-sm;
+  }
+
+  /* Color variants — keep your existing palette, just unify borders */
   .btn-primary {
-    @apply w-full px-6 py-3 bg-brand-yellow text-brand-dark font-semibold rounded-lg;
-    @apply hover:bg-brand-yellow/90 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:ring-offset-2;
-    @apply disabled:opacity-50 disabled:cursor-not-allowed;
-    @apply transition-all duration-200;
+    @apply bg-brand-yellow text-brand-dark border-brand-yellow hover:bg-yellow-400 hover:border-yellow-400;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent text-white border-white/30 hover:bg-white hover:text-brand-dark hover:border-white;
+  }
+
+  .btn-danger {
+    @apply bg-transparent text-red-400 border-red-500/30 hover:bg-red-500 hover:text-white hover:border-red-500;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-gray-600 border-gray-300 hover:bg-gray-50 hover:border-gray-400;
+  }
+
+  .btn-success {
+    @apply bg-green-600 text-white border-green-600 hover:bg-green-700 hover:border-green-700;
   }
 
   /* Input Field Styles */
@@ -44,4 +84,10 @@
   input[type="checkbox"] {
     @apply text-brand-yellow focus:ring-brand-yellow border-brand-gray rounded;
   }
+}
+
+/* Fix Payphone SDK overriding #root padding */
+#root {
+  padding: 0 !important;
+  margin: 0 !important;
 }

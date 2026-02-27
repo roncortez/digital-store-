@@ -1,7 +1,27 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { api } from '../api/api';
+import { IoMdClose } from 'react-icons/io';
+import { HiSave } from 'react-icons/hi';
+import { FaUserEdit } from 'react-icons/fa';
+import { FaStar, FaPhone, FaEnvelope, FaBoxOpen, FaChartBar, FaHeart } from 'react-icons/fa';
 
 // Definir tipos para los niveles de usuario
 type UserLevel = 'Oro' | 'Plata' | 'Bronce';
+
+interface User {
+  firebase_uid: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+  created_at: string;
+  updated_at: string;
+  level: UserLevel;
+  points?: number;
+  doc_id?: string | null;
+}
 
 // Tipos para las tarjetas
 interface DashboardCardProps {
@@ -13,7 +33,7 @@ interface DashboardCardProps {
 // Componente reutilizable de tarjeta
 function DashboardCard({ title, icon, children }: DashboardCardProps) {
   return (
-    <div className={`bg-brand-dark border border-gray-800 p-6 shadow-2xl transition-all duration-300 hover:scale-[1.02] rounded-lg`}>
+    <div className={`bg-brand-dark border border-gray-800 p-6 shadow-2xl transition-all duration-300 hover:scale-[1.02] rounded-none`}>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-bold text-white">{title}</h2>
         <span className="text-4xl">{icon}</span>
@@ -24,24 +44,192 @@ function DashboardCard({ title, icon, children }: DashboardCardProps) {
 }
 
 export default function Dashboard() {
-  // Datos de ejemplo (mock data)
-  const userData = {
-    name: "Juan Pérez",
-    email: "juan.perez@email.com",
-    phone: "+1 (809) 555-1234",
-    points: 1250,
-    level: "Plata" as UserLevel,
-    memberSince: "Enero 2024",
-    totalSpent: "$2,450.00",
-    totalOrders: 12,
-    favoriteCategory: "Laptops"
+  const { currentUser } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
+
+  const [form, setForm] = useState({
+    first_name: '',
+    last_name: '',
+    doc_id: '',
+    phone: '',
+    address: '',
+  });
+
+  const [prefixPhone, setPrefixPhone] = useState('+593')
+  // ==================== Estados de Error ====================
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [docIdError, setDocIdError] = useState("");
+  const [addressError, setAddressError] = useState("");
+
+  const hasAnyError =
+    firstNameError !== '' ||
+    lastNameError !== '' ||
+    phoneError !== '' ||
+    docIdError !== '';
+
+  const handleFirstNameChange = (value: string) => {
+    let formattedValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ -]/g, '');
+    setForm((prev) => ({ ...prev, first_name: formattedValue }))
+
+    if (formattedValue.length === 0) {
+      setFirstNameError("El nombre es obligatorio");
+    }
+
+  }
+
+  const handleLastNameChange = (value: string) => {
+    let formattedValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ -]/g, '');
+    setForm((prev) => ({ ...prev, last_name: formattedValue }))
+
+    if (formattedValue.length === 0) {
+      setLastNameError("El apellido es obligatorio");
+    }
+
+  }
+
+  const validateEcuadorianID = (cedula: string): boolean => {
+    if (cedula.length !== 10) return false;
+    if (!/^\d+$/.test(cedula)) return false;
+
+    const provincia = parseInt(cedula.substring(0, 2));
+    if (provincia < 1 || provincia > 24) return false;
+
+    const tercerDigito = parseInt(cedula.charAt(2));
+    if (tercerDigito > 5) return false;
+
+    const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+    let suma = 0;
+
+    for (let i = 0; i < 9; i++) {
+      let valor = parseInt(cedula.charAt(i)) * coeficientes[i];
+      if (valor >= 10) valor -= 9;
+      suma += valor;
+    }
+
+    const digitoVerificador = suma % 10 === 0 ? 0 : 10 - (suma % 10);
+    const ultimoDigito = parseInt(cedula.charAt(9));
+
+    return digitoVerificador === ultimoDigito;
   };
+
+  const handleIdChange = (value: string) => {
+    if (idType === 'cedula') {
+      let formattedValue = value.replace(/[^0-9]/g, '');
+      setForm((prev) => ({ ...prev, doc_id: formattedValue }))
+
+      if (formattedValue.length >= 1 && formattedValue.length < 10) {
+        setDocIdError("La cédula debe tener 10 dígitos");
+      } else if (!validateEcuadorianID(formattedValue)) {
+        setDocIdError("Cédula inválida");
+      } else {
+        setDocIdError("");
+      }
+    } else {
+      let formattedValue = value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+      setForm((prev) => ({ ...prev, id: formattedValue }))
+
+      if (formattedValue.length === 0) {
+        setDocIdError("El pasaporte es obligatorio");
+      } else if (formattedValue.length < 6) {
+        setDocIdError("El pasaporte debe tener al menos 6 caracteres");
+      } else {
+        setDocIdError("");
+      }
+    }
+  };
+
+  const handlePhoneChange = (value: string) => {
+    let formattedValue = value.replace(/\D/g, '');
+    setForm((prev) => ({ ...prev, phone: formattedValue }));
+
+    if (formattedValue.length === 0) {
+      setPhoneError("");
+    } else if (formattedValue.length !== 9) {
+      setPhoneError("Número de teléfono inválido");
+    } else if (!formattedValue.startsWith("9")) {
+      setPhoneError("El número debe empezar con 9");
+    } else {
+      setPhoneError("");
+    }
+
+  }
+
+  const handleAddressChange = (value: string) => {
+    setForm((prev) => ({ ...prev, address: value }))
+  }
+  const [openModal, setOpenModal] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
+
+  const [idType, setIdType] = useState('cedula');
+
+  const handleOpenModal = () => {
+    setForm({
+      first_name: user?.first_name || '',
+      last_name: user?.last_name || '',
+      doc_id: user?.doc_id || '',
+      phone: user?.phone?.trim().replace(/^\+\d{1,3}\s?/, '') || '',
+      address: user?.address || '',
+    });
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setStatus('idle');
+    setDocIdError('');
+    setFirstNameError('');
+    setLastNameError('');
+    setPhoneError('');
+    setAddressError('');
+  }
+
+  const updateUser = async () => {
+    setStatus('saving');
+    try {
+      const response = await api.put(`/users/${currentUser?.uid}`, {
+        first_name: form.first_name,
+        last_name: form.last_name,
+        doc_id: form.doc_id,
+        phone: form.phone ? prefixPhone + form.phone : '',
+        address: form.address
+      });
+      console.log(response);
+      if (response.data.success) {
+        setUser(response.data.user);
+        setStatus('success');
+      }
+    } catch (error) {
+      setStatus('error');
+    }
+  }
+
+  const getUser = async () => {
+    try {
+      const response = await api.get(`/users/${currentUser?.uid}`);
+
+      if (response.data.success) {
+        setUser(response.data.user);
+      }
+      console.log(response.data.user);
+    } catch (error) {
+      console.error('Error fetching user:', error);
+    }
+  }
+
+  useEffect(() => {
+    if (currentUser) {
+      getUser();
+    }
+  }, [currentUser]);
 
   const recentOrders = [
     { id: "#1234", date: "28 Nov 2024", status: "Entregado", total: "$299.99" },
     { id: "#1233", date: "15 Nov 2024", status: "En tránsito", total: "$149.50" },
     { id: "#1232", date: "05 Nov 2024", status: "Entregado", total: "$89.99" }
   ];
+
   const colors: Record<UserLevel, { gradient: string; text: string }> = {
     'Oro': {
       gradient: "from-[#F6E27A] via-[#E3C75F] to-[#CBA135]",
@@ -62,22 +250,24 @@ export default function Dashboard() {
     {
       id: 'points',
       title: 'Mis Puntos',
-      icon: '⭐',
+      icon: <FaStar className='text-gray-400' />,
       content: (
         <div className="space-y-4">
-          <div className={`bg-gradient-to-r ${colors[userData.level].gradient} p-4 rounded-lg`}>
-            <p className={`text-sm ${colors[userData.level].text}`}>Puntos disponibles</p>
-            <p className={`text-5xl ${colors[userData.level].text} font-bold`}>{userData.points}</p>
-          </div>
+          {/*<div className={`bg-gradient-to-r ${colors[user?.level || 'Bronce'].gradient} p-4 rounded-lg`}>
+            <p className={`text-sm ${colors[user?.level || 'Bronce'].text}`}>Puntos disponibles</p>
+            <p className={`text-5xl ${colors[user?.level || 'Bronce'].text} font-bold`}>{user?.points || 0}</p>
+          </div>*/}
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gray-700/50 p-3 rounded-lg border border-gray-600">
+            <div className="bg-gray-700/50 p-3 rounded-none border border-gray-600">
               <p className="text-gray-400 text-xs mb-1">Nivel actual</p>
-              <p className="text-white font-semibold text-lg">{userData.level}</p>
+              <p className="text-white font-semibold text-lg">{user?.level}</p>
             </div>
-            <div className="bg-gray-700/50 p-3 rounded-lg border border-gray-600">
+            <div className="bg-gray-700/50 p-3 rounded-none border border-gray-600">
               <p className="text-gray-400 text-xs mb-1">Miembro desde</p>
-              <p className="text-white font-semibold text-lg">{userData.memberSince}</p>
+              <p className="text-white font-semibold text-lg">
+                {user ? new Date(user.created_at).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }) : '-'}
+              </p>
             </div>
           </div>
 
@@ -99,13 +289,13 @@ export default function Dashboard() {
     {
       id: 'orders',
       title: 'Pedidos recientes',
-      icon: '📦',
+      icon: <FaBoxOpen className='text-gray-400' />,
       content: (
         <div className="space-y-3">
           {recentOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-gray-700/50 p-4 rounded-lg border border-gray-700 hover:bg-gray-750 transition-all duration-200"
+              className="bg-gray-700/50 p-4 rounded-none border border-gray-700 hover:bg-gray-750 transition-all duration-200"
             >
               <div className="flex justify-between items-start mb-2">
                 <div>
@@ -126,7 +316,7 @@ export default function Dashboard() {
             </div>
           ))}
 
-          <button className="w-full mt-4 bg-brand-yellow text-brand-dark font-semibold py-3 px-6 hover:bg-yellow-500 transition-all duration-300 rounded-lg">
+          <button className="btn btn-primary w-full mt-4">
             Ver todos los pedidos →
           </button>
         </div>
@@ -135,24 +325,21 @@ export default function Dashboard() {
     {
       id: 'stats',
       title: 'Estadísticas',
-      icon: '📊',
+      icon: <FaChartBar className='text-gray-400' />,
       hoverColor: 'green',
       content: (
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-3">
-            <div className="bg-gray-700/50 p-4 rounded-lg text-white">
+            <div className="bg-gray-700/50 p-4 rounded-none text-white">
               <p className="text-white/80 text-sm mb-1">Total gastado</p>
-              <p className="text-3xl font-bold">{userData.totalSpent}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gray-700/50 p-3 rounded-lg border border-gray-600">
+              <div className="bg-gray-700/50 p-3 rounded-none border border-gray-600">
                 <p className="text-gray-400 text-xs mb-1">Órdenes totales</p>
-                <p className="text-white font-bold text-2xl">{userData.totalOrders}</p>
               </div>
-              <div className="bg-gray-700/50 p-3 rounded-lg border border-gray-600">
+              <div className="bg-gray-700/50 p-3 rounded-none border border-gray-600">
                 <p className="text-gray-400 text-xs mb-1">Favorito</p>
-                <p className="text-white font-bold text-lg">{userData.favoriteCategory}</p>
               </div>
             </div>
           </div>
@@ -162,7 +349,7 @@ export default function Dashboard() {
     {
       id: 'wishlist',
       title: 'Lista de Deseos',
-      icon: '❤️',
+      icon: <FaHeart className='text-gray-400' />,
       hoverColor: 'red',
       content: (
         <div className="space-y-3">
@@ -171,7 +358,7 @@ export default function Dashboard() {
             <p className="text-gray-300 mb-2">Tu lista está vacía</p>
             <p className="text-gray-500 text-sm">Agrega productos que te gusten</p>
           </div>
-          <button className="w-full bg-brand-yellow text-brand-dark font-semibold py-3 px-6 hover:bg-yellow-500 transition-all duration-300 rounded-lg">
+          <button className="btn btn-primary w-full">
             Explorar productos →
           </button>
         </div>
@@ -181,6 +368,18 @@ export default function Dashboard() {
 
 
 
+  // Loading state
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-brand-yellow mx-auto mb-4"></div>
+          <p className="text-gray-600">Cargando dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       {/* Enhanced Header with User Profile */}
@@ -189,35 +388,35 @@ export default function Dashboard() {
           {/* Left: User Profile Info */}
           <div className="flex items-center gap-4">
             {/* Avatar */}
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brand-yellow to-orange-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-              {userData.name.split(' ').map(n => n[0]).join('')}
+            <div className="w-20 h-20 rounded-full border-2 border-blue-500/50 bg-blue-600 flex items-center justify-center text-white text-3xl font-black shadow-lg">
+              {`${user.first_name[0]}${user.last_name[0]}`}
             </div>
 
             {/* User Info */}
             <div>
               <h1 className="text-3xl font-bold text-gray-800">
-                ¡Bienvenido, {userData.name}!
+                ¡Bienvenido, {user.first_name} {user.last_name}!
               </h1>
-              <p className="text-gray-600 text-sm mt-1">📧 {userData.email}</p>
-              <p className="text-gray-600 text-sm">📱 {userData.phone}</p>
+              <div className="flex items-center gap-2 text-gray-600 text-sm mt-1"><FaEnvelope /> {user.email}</div>
+              <div className="flex items-center gap-2 text-gray-600 text-sm"><FaPhone /> {user.phone || 'No especificado'}</div>
             </div>
           </div>
 
           {/* Right: Action Buttons */}
           <div className="flex gap-3">
-            <button className="px-6 py-3 bg-brand-dark text-white font-semibold rounded-lg hover:bg-gray-700 transition-all duration-300 flex items-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-              Editar Perfil
+            <button
+              onClick={handleOpenModal}
+              className="btn btn-ghost flex items-center gap-2">
+              <FaUserEdit className="w-5 h-5" />
+              Editar perfil
             </button>
           </div>
         </div>
 
         {/* Activity Summary */}
-        <div className="mt-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+        <div className="mt-6 bg-white p-4 rounded-none border border-gray-200 shadow-sm">
           <p className="text-gray-600">
-            <span className="font-semibold text-gray-800">Tu resumen:</span> Tienes {userData.points} puntos disponibles • Nivel {userData.level} • Miembro desde {userData.memberSince}
+            <span className="font-semibold text-gray-800">Tu resumen:</span> Tienes {user.points || 0} puntos disponibles • Nivel {user.level} • Miembro desde {new Date(user.created_at).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
           </p>
         </div>
       </div>
@@ -234,6 +433,148 @@ export default function Dashboard() {
           </DashboardCard>
         ))}
       </div>
+
+      {openModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
+          <div className="bg-white p-10 rounded-none shadow-lg w-full max-w-2xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {status !== 'success' && <h2 className="text-xl font-bold text-gray-900">Editar</h2>}
+              </div>
+              <button onClick={handleCloseModal}><IoMdClose className="w-6 h-6 text-gray-600" /></button>
+            </div>
+            {status === 'success' ?
+              (
+                <div className="flex items-center justify-center mt-5 space-y-4">
+                  <h2 className="text-xl font-bold text-gray-900">Actualización exitosa</h2>
+                </div>
+              )
+              : (
+                <div className=" mt-5 space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Nombre
+                    </label>
+                    <input
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                      type="text"
+                      value={form.first_name}
+                      onChange={(e) => handleFirstNameChange(e.target.value)}
+                      style={{ textTransform: 'capitalize' }}
+                    />
+                    <span className="text-xs text-danger">{firstNameError}</span>
+
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Apellido
+                    </label>
+                    <input
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                      type="text"
+                      value={form.last_name}
+                      onChange={(e) => handleLastNameChange(e.target.value)}
+                      style={{ textTransform: 'capitalize' }}
+                    />
+                    <span className="text-xs text-danger">{lastNameError}</span>
+
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Identificación
+                      </label>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => { setIdType('cedula'); }}
+                          className={`px-3 py-0.5 rounded-none text-xs font-medium transition-colors ${idType === 'cedula'
+                            ? 'bg-brand-yellow text-brand-dark'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        >
+                          Cédula
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => { setIdType('pasaporte'); }}
+                          className={`px-3 py-0.5 rounded-none text-xs font-medium transition-colors ${idType === 'pasaporte'
+                            ? 'bg-brand-yellow text-brand-dark'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                        >
+                          Pasaporte
+                        </button>
+
+                      </div>
+
+                    </div>
+                    <input
+                      type="text"
+                      value={form.doc_id}
+                      maxLength={idType === 'cedula' ? 10 : 20}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                      placeholder={idType === 'cedula' ? '1712345678' : 'AB123456'}
+                      onChange={(e) => handleIdChange(e.target.value)}
+                    />
+                    <span className="text-xs text-danger">{docIdError}</span>
+
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Teléfono
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={prefixPhone}
+                        disabled={true}
+                        className="w-20 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                      />
+                      <input
+                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                        type="text"
+                        maxLength={9}
+                        value={form.phone}
+                        onChange={(e) => handlePhoneChange(e.target.value)}
+                      />
+                    </div>
+                    <span className="text-xs text-danger">{phoneError}</span>
+
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Dirección
+                    </label>
+                    <input
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent"
+                      type="text"
+                      value={form.address}
+                      onChange={(e) => handleAddressChange(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3">
+                    <button
+                      onClick={handleCloseModal}
+                      className="btn btn-ghost btn-sm"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      disabled={hasAnyError || status === 'saving'}
+                      onClick={updateUser}
+                      className={`btn btn-primary btn-sm flex items-center gap-2`}
+                    >
+                      <HiSave className="w-4 h-4" />
+                      {status === 'saving' ? 'Guardando...' : 'Guardar'}
+                    </button>
+                  </div>
+                </div>
+              )}
+          </div>
+
+        </div>
+      )}
     </div>
   );
 }

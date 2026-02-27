@@ -9,13 +9,13 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    
+
     try {
       setError('');
       setLoading(true);
@@ -24,7 +24,7 @@ export default function Login() {
     } catch (err: any) {
       setError('Error al iniciar sesión: ' + err.message);
     }
-    
+
     setLoading(false);
   }
 
@@ -39,29 +39,29 @@ export default function Login() {
             </div>
             <span className="text-white text-2xl font-semibold">maitech</span>
           </div>
-          
+
           <div className="space-y-8 animate-fade-in">
             <div className="space-y-6">
               <h1 className="text-4xl font-bold text-white leading-tight">
-                Tu tienda de <br/>
+                Tu tienda de <br />
                 <span className="text-brand-yellow">equipos tecnológicos</span>
               </h1>
               <p className="text-white font-medium text-lg max-w-md">
-                Encuentra laptops, smartphones, tablets y más. 
+                Encuentra laptops, smartphones, tablets y más.
                 La plataforma más confiable para tecnología de calidad.
               </p>
             </div>
 
             {/* New Action Buttons */}
             <div className="flex items-center space-x-4">
-              <Link 
-                to="/marketplace" 
+              <Link
+                to="/marketplace"
                 className="px-6 py-3 bg-brand-yellow text-brand-dark font-bold border-2 border-brand-yellow hover:bg-yellow-400 hover:border-yellow-400 transition-colors"
               >
                 Comprar
               </Link>
-              <Link 
-                to="/about" 
+              <Link
+                to="/about"
                 className="px-6 py-3 border-2 border-white text-white font-bold hover:bg-white hover:text-brand-dark transition-colors"
               >
                 Saber más
@@ -81,9 +81,9 @@ export default function Login() {
               </div>
               <span className="text-brand-dark text-2xl font-semibold">maitech</span>
             </div>
-            
+
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              ¡Bienvenido! 
+              ¡Bienvenido!
             </h2>
             <p className="text-gray-600">
               Inicia sesión para acceder a tu cuenta
@@ -96,7 +96,7 @@ export default function Login() {
                 {error}
               </div>
             )}
-            
+
             <div className="space-y-4">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
@@ -113,7 +113,7 @@ export default function Login() {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                   Contraseña
@@ -163,7 +163,7 @@ export default function Login() {
               </div>
 
               <div className="text-sm">
-                <Link to="/forgot-password" className="font-bold text-brand-dark hover:text-brand-yellow">
+                <Link to="/forgot-password" className="font-bold text-brand-dark">
                   ¿Olvidaste tu contraseña?
                 </Link>
               </div>
@@ -173,7 +173,7 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border-2 border-brand-yellow shadow-sm text-sm font-bold text-brand-dark bg-brand-yellow hover:bg-yellow-500 hover:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-yellow disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="btn btn-primary w-full"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">
@@ -201,7 +201,7 @@ export default function Login() {
             <div className="text-center">
               <p className="text-sm text-gray-600">
                 ¿No tienes cuenta?{' '}
-                <Link to="/register" className="text-brand-dark font-bold hover:text-brand-yellow">
+                <Link to="/register" className="text-brand-dark font-bold">
                   Regístrate
                 </Link>
               </p>

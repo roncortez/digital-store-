@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import BenefitsBadges from '../components/BenefitsBadges';
+import { api } from '../api/api';
 
 interface PasswordStrength {
   score: number;
@@ -10,6 +11,8 @@ interface PasswordStrength {
 }
 
 export default function Register() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,14 +22,14 @@ export default function Register() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState<PasswordStrength>({ score: 0, message: '', color: '' });
   const [acceptTerms, setAcceptTerms] = useState(false);
-  
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const checkPasswordStrength = (password: string): PasswordStrength => {
     if (password.length === 0) return { score: 0, message: '', color: '' };
     if (password.length < 6) return { score: 1, message: 'Muy débil', color: 'red' };
-    
+
     let score = 0;
     const checks = [
       /[a-z]/.test(password), // lowercase
@@ -35,9 +38,9 @@ export default function Register() {
       /[^A-Za-z0-9]/.test(password), // special chars
       password.length >= 8 // length
     ];
-    
+
     score = checks.filter(Boolean).length;
-    
+
     if (score <= 2) return { score, message: 'Débil', color: 'orange' };
     if (score <= 3) return { score, message: 'Media', color: 'yellow' };
     if (score <= 4) return { score, message: 'Fuerte', color: 'lime' };
@@ -48,33 +51,47 @@ export default function Register() {
     setPasswordStrength(checkPasswordStrength(password));
   }, [password]);
 
+  // Helper function to capitalize each word
+  const capitalizeWords = (text: string): string => {
+    return text
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       setError('Las contraseñas no coinciden');
       return;
     }
-    
+
     if (passwordStrength.score < 3) {
       setError('La contraseña debe ser al menos de fuerza media');
       return;
     }
-    
+
     if (!acceptTerms) {
       setError('Debes aceptar los términos y condiciones');
       return;
     }
-    
+
     try {
       setError('');
       setLoading(true);
-      await register(email, password);
+      const user = await register(email, password);
+      await api.post('/users', {
+        firebase_uid: user.uid,
+        first_name: firstName,
+        last_name: lastName,
+        email: email
+      })
       navigate('/dashboard');
     } catch (err: any) {
       setError('Error al registrarse: ' + err.message);
     }
-    
+
     setLoading(false);
   }
 
@@ -89,17 +106,17 @@ export default function Register() {
             </div>
             <span className="text-white text-2xl font-semibold">maitech</span>
           </div>
-          
+
           <div className="space-y-8">
             <div className="space-y-6">
               <h1 className="text-4xl font-bold text-white leading-tight">
                 Crea tu cuenta gratis y <span className="text-brand-yellow">empieza a comprar. </span>
               </h1>
-              
+
             </div>
           </div>
         </div>
-        
+
         <div className="relative z-10">
           <div className="space-y-6">
             <h3 className="text-white font-semibold text-lg">Beneficios de unirte:</h3>
@@ -143,36 +160,72 @@ export default function Register() {
               </div>
               <span className="text-brand-dark text-2xl font-semibold">maitech</span>
             </div>
-            
+
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
               Crea tu cuenta
             </h2>
           </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
+          <form className="space-y-5" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
                 {error}
               </div>
             )}
-            
-            <div className="space-y-4">
+
+            <div className="space-y-5">
+              {/* Nombre y Apellido en la misma fila */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Nombre
+                  </label>
+                  <input
+                    id="first_name"
+                    name="first_name"
+                    type="text"
+                    required
+                    className="w-full px-4 py-2.5 rounded bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent transition-colors"
+                    placeholder="Tu nombre"
+                    value={firstName}
+                    onChange={(e) => setFirstName(capitalizeWords(e.target.value))}
+                    style={{ textTransform: 'capitalize' }}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">
+                    Apellido
+                  </label>
+                  <input
+                    id="last_name"
+                    name="last_name"
+                    type="text"
+                    required
+                    className="w-full px-4 py-2.5 rounded bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent transition-colors"
+                    placeholder="Tu apellido"
+                    value={lastName}
+                    onChange={(e) => setLastName(capitalizeWords(e.target.value))}
+                    style={{ textTransform: 'capitalize' }}
+                  />
+                </div>
+              </div>
+
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  Correo Electrónico
+                  Correo electrónico
                 </label>
                 <input
                   id="email"
                   name="email"
                   type="email"
                   required
-                  className="w-full px-4 py-3 rounded bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent transition-colors"
-                  placeholder="tu@email.com"
+                  className="w-full px-4 py-2.5 rounded bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent transition-colors"
+                  placeholder="nombre@ejemplo.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                   Contraseña
@@ -183,7 +236,7 @@ export default function Register() {
                     name="password"
                     type={showPassword ? 'text' : 'password'}
                     required
-                    className="w-full px-4 py-3 rounded bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent transition-colors pr-12"
+                    className="w-full px-4 py-2.5 rounded bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent transition-colors pr-12"
                     placeholder="Crea una contraseña segura"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -205,17 +258,17 @@ export default function Register() {
                     )}
                   </button>
                 </div>
-                
+
                 {password && (
-                  <div className="mt-2 space-y-2">
+                  <div className="mt-1.5 space-y-1.5">
                     <div className="flex justify-between text-xs">
-                      <span className="text-gray-500">Fortaleza de la contraseña</span>
+                      <span className="text-gray-500">Fortaleza</span>
                       <span className={`font-medium ${passwordStrength.color === 'red' ? 'text-red-500' : passwordStrength.color === 'orange' ? 'text-orange-500' : passwordStrength.color === 'yellow' ? 'text-yellow-500' : passwordStrength.color === 'lime' ? 'text-lime-500' : 'text-green-500'}`}>
                         {passwordStrength.message}
                       </span>
                     </div>
                     <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className={`h-full transition-all duration-300 ${passwordStrength.color === 'red' ? 'bg-red-500' : passwordStrength.color === 'orange' ? 'bg-orange-500' : passwordStrength.color === 'yellow' ? 'bg-yellow-500' : passwordStrength.color === 'lime' ? 'bg-lime-500' : 'bg-green-500'}`}
                         style={{ width: `${(passwordStrength.score / 5) * 100}%` }}
                       />
@@ -223,10 +276,10 @@ export default function Register() {
                   </div>
                 )}
               </div>
-              
+
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirmar Contraseña
+                  Confirmar contraseña
                 </label>
                 <div className="relative">
                   <input
@@ -234,7 +287,7 @@ export default function Register() {
                     name="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
                     required
-                    className="w-full px-4 py-3 rounded bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent transition-colors pr-12"
+                    className="w-full px-4 py-2.5 rounded bg-gray-50 border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-yellow focus:border-transparent transition-colors pr-12"
                     placeholder="Repite tu contraseña"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
@@ -271,15 +324,15 @@ export default function Register() {
                 type="checkbox"
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="h-4 w-4 text-brand-yellow focus:ring-brand-yellow border-gray-300"
+                className="h-4 w-4 text-brand-dark focus:ring-brand-yellow border-gray-300"
               />
               <label htmlFor="accept-terms" className="ml-2 block text-sm text-gray-600">
                 Acepto los{' '}
-                <Link to="/terms" className="text-brand-yellow hover:text-yellow-600 hover:underline">
+                <Link to="/terms" className="text-brand-dark font-bold hover:text-dark-600 hover:underline">
                   términos y condiciones
                 </Link>
                 {' '}y la{' '}
-                <Link to="/privacy" className="text-brand-yellow hover:text-yellow-600 hover:underline">
+                <Link to="/privacy" className="text-brand-dark font-bold hover:text-dark-600 hover:underline">
                   política de privacidad
                 </Link>
               </label>
@@ -289,7 +342,7 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={loading || !acceptTerms}
-                className="w-full flex justify-center py-3 px-4 border-2 border-brand-yellow shadow-sm text-sm font-bold text-brand-dark bg-brand-yellow hover:bg-yellow-500 hover:border-yellow-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-yellow disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className='btn btn-primary w-full'
               >
                 {loading ? (
                   <span className="flex items-center">
@@ -317,7 +370,7 @@ export default function Register() {
             <div className="text-center">
               <p className="text-sm text-gray-600">
                 ¿Ya tienes cuenta?{' '}
-                <Link to="/login" className="font-medium text-brand-yellow hover:text-yellow-600">
+                <Link to="/login" className="text-brand-dark font-bold hover:text-dark-600">
                   Inicia sesión
                 </Link>
               </p>
@@ -329,5 +382,5 @@ export default function Register() {
         </div>
       </div>
     </div>
-);
+  );
 }

@@ -26,36 +26,59 @@ export default function ProductCard({ id, name, price, description }: ProductCar
         decrementQuantity(id);
     }
 
-    // Si el producto está en el carrito, mostrar la cantidad, si no, mostrar 0
-    // El operador ? es para acceder a la propiedad quantity de un objeto que puede ser undefined
-    const quantity = cart.find(item => item.id === id)?.quantity || 0;
+    const quantity = cart.find(item => item.id === id)?.quantity ?? 0;
 
     return (
-        <div className="border border-gray-200 rounded-md flex flex-col h-[450px]">
+        <div className="group bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:shadow-brand-dark/5 border border-gray-100 overflow-hidden transition-all duration-500 flex flex-col h-full active:scale-[0.98]">
 
-            {/* Imagen - altura fija */}
-            <Link to={`/product/${id}`}>
-                <div className="h-[240px] bg-gray-100 bg-gradient-to-b from-gray-100 to-gray-200 flex items-center justify-center cursor-pointer hover:opacity-90 transition">
-                    <span className="text-4xl">img</span>
-                </div>
-            </Link>
+            {/* Imagen con badge de condición */}
+            <div className="relative h-64 bg-gray-50 flex items-center justify-center overflow-hidden">
+                <Link to={`/product/${id}`} className="w-full h-full">
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100/50 group-hover:scale-110 transition-transform duration-700 ease-out">
+                        <span className="text-5xl text-gray-200 font-bold tracking-widest opacity-40 group-hover:opacity-60 transition-opacity">IMAGE</span>
+                    </div>
+                </Link>
+
+            </div>
 
             {/* Contenido con padding */}
             <div className="p-4 flex flex-col flex-1">
 
-                {/* Título con altura fija de 2 líneas */}
-                <h3 className="font-semibold text-gray-900 line-clamp-2 h-[3rem] overflow-hidden">
+                {/* Título - hasta 3 líneas */}
+                <h3 className="font-semibold text-gray-900 line-clamp-3 text-base leading-tight">
                     {name}
                 </h3>
 
-                {/* Descripción con altura fija de 2 líneas */}
-                <p className="text-sm text-gray-600 mt-2 line-clamp-2 h-[2.5rem] overflow-hidden">
+                {/* Descripción - hasta 2 líneas */}
+                <p className="text-xs text-gray-500 mt-2 line-clamp-2">
                     {description}
                 </p>
 
-                {/* Precio + botón con altura fija */}
-                <div className="mt-auto flex flex-col md:flex-row items-center justify-between md:h-[44px] gap-2">
-                    <p className="text-xl font-bold whitespace-nowrap">${price}</p>
+                {/* Rating estrellas */}
+                <div className="flex items-center gap-1.5 mt-3">
+                    <div className="flex gap-0.5">
+                        {[...Array(5)].map((_, i) => (
+                            <svg key={i} className={`w-3 h-3 ${i < 4 ? 'text-brand-yellow shadow-sm' : 'text-gray-200'}`} fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        ))}
+                    </div>
+                    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">4.8 (124 reseñas)</span>
+                </div>
+
+                {/* Precio con diseño mejorado */}
+                <div className="mt-auto flex flex-col gap-4 pt-3">
+                    <div className="flex items-baseline gap-2">
+                        <p className="text-2xl font-bold text-gray-900">
+                            ${price ? price.toLocaleString('es-ES') : '0'}
+                        </p>
+                        {price && (
+                            <p className="text-sm text-gray-400 line-through">
+                                ${(price * 1.15).toLocaleString('es-ES')}
+                            </p>
+                        )}
+                    </div>
+
                     {quantity === 0 ?
                         (<AddToCartButton onClick={handleAddToCart} />) :
                         (<QuantitySelector quantity={quantity} onIncrement={handleIncrement} onDecrement={handleDecrement} />)

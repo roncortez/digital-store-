@@ -11,7 +11,11 @@ import Register from './pages/Register';
 import Marketplace from './pages/Marketplace';
 import Product from './pages/Product';
 import Checkout from './pages/Checkout';
+import PaymentResult from './pages/PaymentResult';
 import About from './pages/About';
+import Services from './pages/Services';
+import Sales from './pages/Sales';
+import Admin from './pages/Admin';
 import { AuthProvider } from './contexts/AuthContext';
 import CartProvider from './contexts/CartContext';
 
@@ -29,8 +33,12 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
             <Route path="marketplace" element={<Marketplace />} />
+            <Route path="services" element={<Services />} />
+            <Route path="sales" element={<Sales />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="payment-result" element={<PaymentResult />} />
             <Route path="product/:id" element={<Product />} />
+            <Route path="admin" element={<Admin />} />
           </Route>
         </Routes>
       </AuthProvider>
